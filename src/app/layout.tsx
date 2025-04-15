@@ -1,17 +1,20 @@
 import type { Metadata } from "next";
-import { Poppins } from "next/font/google";
+import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
-const popins = Poppins({
-  variable: "--font-poppins",
+const geistSans = Geist({
+  variable: "--font-geist-sans",
   subsets: ["latin"],
-  weight: ["400", "600", "700"]
 });
 
+const geistMono = Geist_Mono({
+  variable: "--font-geist-mono",
+  subsets: ["latin"],
+});
 
 export const metadata: Metadata = {
-  title: "Só nós dois",
-  description: "Romaticos de plantão",
+  title: "Só nos dois",
+  description: "Românticos",
 };
 
 export default function RootLayout({
@@ -22,7 +25,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${popins.variable}`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         {children}
       </body>

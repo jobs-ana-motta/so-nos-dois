@@ -6,4 +6,4 @@ export function formDataToObject(formData: FormData): Record<string, string> {
       }
     });
     return obj;
-  }
+}

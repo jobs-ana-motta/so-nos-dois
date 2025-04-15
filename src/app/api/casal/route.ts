@@ -12,6 +12,7 @@ const casalSchema = z.object({
   dataInicio: z.string().min(1, "Data de inicio obrigatorio"),
   corFundo: z.string().min(1, "Cor de fundo obrigatorio"),
   fotoUrl: z.string().min(1, "Url da foto obrigatorio"),
+  paid: z.boolean().default(false),
 });
 
 export async function POST(request: NextRequest) {
@@ -29,7 +30,7 @@ export async function POST(request: NextRequest) {
     const fields = formDataToObject(formData); // transforma tudo em um objeto
 
     const fotoUrl = await uploadToCloudinary(file, "casais");
-    const parsed = casalSchema.safeParse({ ...fields, fotoUrl });
+    const parsed = casalSchema.safeParse({ ...fields, fotoUrl, paid : false });
 
     if (!parsed.success) {
       return NextResponse.json(
@@ -42,8 +43,8 @@ export async function POST(request: NextRequest) {
       ...parsed.data,
       criadoEm: Timestamp.now(),
     });
-
-    return NextResponse.json({ id: docRef.id, ok: true }, { status: 201 });
+    let url =  `${process.env.PUBLIC_URL}/api/casal/${docRef.id}`
+    return NextResponse.json({ id: docRef.id, ok: true, url }, { status: 201 });
   } catch (error) {
     console.error("❌ Erro em /api/casal:", error);
     return NextResponse.json(

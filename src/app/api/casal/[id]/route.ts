@@ -20,7 +20,12 @@ export async function GET(
             return NextResponse.json({ error: "Casal nao encontrado" }, { status: 404 });
         }
 
-        return NextResponse.json(snapshot.data(), { status: 200 });
+        if(snapshot.data().paid == false) { 
+            return NextResponse.json({ error: "Casal nao pago" }, { status: 403 });
+        }
+        let data = snapshot.data()
+        let info = { fotoUrl: data.fotoUrl, corFundo: data.corFundo, emoji: data.emoji, dataInicio: data.dataInicio, nome: data.nome, mensagem: data.mensagem };
+        return NextResponse.json(info, { status: 200 });
     } catch (error) {
         return NextResponse.json({ error: "Erro ao buscar casal" }, { status: 500 });
     }

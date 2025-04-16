@@ -129,6 +129,8 @@ export default function Create() {
     setSubmitting(false);
     resetForm();
 
+    console.log(data, response.status)
+
     if (response.status === 201) {
       router.push(`/gratidao?id=${data.id}`);
     }
@@ -378,7 +380,7 @@ export default function Create() {
                               image={imageSrc}
                               crop={crop}
                               zoom={zoom}
-                              aspect={9 / 16}
+                              aspect={12 / 16}
                               onCropChange={setCrop}
                               onCropComplete={onCropComplete}
                               onZoomChange={setZomm}

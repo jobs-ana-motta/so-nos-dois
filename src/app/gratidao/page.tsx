@@ -21,6 +21,7 @@ export default function Gratidao() {
     async function loadCasal() {
       const response = await fetch(`/api/casal/${id}`);
       const data = await response.json();
+
       setCasal(data);
       if(response.status == 404) {
         router.push("/404");
@@ -35,15 +36,6 @@ export default function Gratidao() {
        router.push("/404");
     }
   }, [id]);
-
-  useEffect(()=> {
-    if(casal && casal.error) { 
-      router.push(`/404`);
-    }
-    if(casal) { 
-        console.log(id)
-    }
-  }, [casal])
 
 
   if (loading) {
@@ -77,7 +69,7 @@ export default function Gratidao() {
               sua página romântica. 💖
             </p>
             <div className="flex flex-col gap-3">
-              { !casal ? 
+              { !casal.paid ? 
               <a
                 href="https://api.whatsapp.com/send?phone=5543999274825"
                 target="_blank"

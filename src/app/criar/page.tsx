@@ -18,7 +18,7 @@ import { Button } from "@/components/ui/button";
 import { useCallback, useState } from "react";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
-import { DialogContent, Dialog } from "@/components/ui/dialog";
+import { DialogContent, Dialog, DialogTitle } from "@/components/ui/dialog";
 import Cropper from "react-easy-crop";
 import { getCroppedImg } from "@/lib/recorteImg";
 import {
@@ -96,8 +96,19 @@ export default function Create() {
     setCroppedAreaPixels(croppedPixels);
   }, []);
 
-  const handleSubmit = (values: any) => {
+  const handleSubmit = (
+    values: any,
+    {
+      setSubmitting,
+      resetForm,
+    }: { setSubmitting: (isSubmitting: boolean) => void; resetForm: () => void }
+  ) => {
     console.log(values);
+    setFullImage("");
+    setSelectedEmoji("");
+    setSelectedColor("");
+    setSubmitting(false);
+    resetForm();
   };
 
   return (
@@ -132,6 +143,11 @@ export default function Create() {
               setFieldValue("imagem", croppedImage);
               setModalOpen(false);
             };
+
+            const removeImg = () => {
+                setFieldValue("image", "")
+                setFullImage("")
+            }
             return (
               <Form className="w-full flex items-center flex-col p-4 bg-[#1f1f1f] rounded shadow-md gap-4 md:min-w-[768px]">
                 <div className="flex w-full justify-between gap-4">
@@ -177,7 +193,7 @@ export default function Create() {
                             <Button
                               type="button"
                               className={cn(
-                                "w-full flex justify-start items-center text-left cursor-pointer px-4 py-2 rounded-md bg-card-foreground gap-2 border-[0.5px] border-gray-700",
+                                "w-full flex justify-start items-center text-left cursor-pointer px-4 py-2 rounded-md bg-card-foreground gap-2 border-[0.5px] border-gray-700"
                               )}
                             >
                               <CalendarIcon className="h-4 w-4" />
@@ -209,6 +225,7 @@ export default function Create() {
                     name="message"
                     className="outline-none bg-card-foreground border-[0.5px] border-gray-700 resize-none max-w-[750px]"
                     placeholder="Messagem fofinha"
+                    value={values.message}
                     onChange={handleChange}
                     onBlur={handleBlur}
                   />
@@ -285,6 +302,9 @@ export default function Create() {
                     </label>
 
                     <Dialog open={modalOpen} onOpenChange={setModalOpen}>
+                      <DialogTitle className="hidden">
+                        Recorte sua foto
+                      </DialogTitle>
                       <DialogContent className="w-[90vw] max-w-xl h-[70vh]">
                         {imageSrc && (
                           <div className="relative w-full h-full">
@@ -298,7 +318,7 @@ export default function Create() {
                               onZoomChange={setZomm}
                             />
                             <Button
-                              className="absolute left-1/2 -translate-x-1/2 -bottom-6"
+                              className="absolute left-1/2 -translate-x-1/2 -bottom-6 bg-[#D22630] cursor-pointer"
                               onClick={handleCrop}
                             >
                               Recortar imagem
@@ -311,7 +331,7 @@ export default function Create() {
                 </div>
 
                 {fullImage && (
-                  <div className="mt-4 flex justify-center">
+                  <div className="my-4 flex justify-center flex-col gap-4">
                     <Image
                       src={fullImage}
                       alt="Preview recortado"
@@ -319,12 +339,20 @@ export default function Create() {
                       height={355}
                       className="rounded-lg object-cover border border-gray-600"
                     />
+
+                    <Button
+                      onClick={removeImg}
+                      className="bg-[#D22630] w-full cursor-pointer"
+                    >
+                      Remover foto
+                    </Button>
                   </div>
                 )}
 
                 <Button
                   onClick={() => handleSubmit()}
                   className="bg-[#D22630] w-full"
+                  disabled={isSubmitting}
                 >
                   Criar sua página
                 </Button>

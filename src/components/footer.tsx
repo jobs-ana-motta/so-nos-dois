@@ -3,7 +3,7 @@ import logo from "../../public/LogoSND.png";
 
 export default function Footer() {
   return (
-    <footer className="border-t-[0.1px] border-gray-700 bg-card-foreground py-6 w-full">
+    <footer className="border-t-[0.1px] border-white/5 bg-card-foreground py-6 w-full">
         <div className="flex items-center justify-center gap-2">
           <Image
             src={logo}

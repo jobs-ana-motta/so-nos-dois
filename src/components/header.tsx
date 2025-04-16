@@ -11,9 +11,10 @@ export default function Header() {
   const pathname = usePathname();
     const router = useRouter();
   return (
-    <header className="w-full border-b-[0.5px] border-gray-700 bg-card-foreground p-4 flex justify-between">
+    <header className="w-full border-b-[0.5px] border-white/5 bg-card-foreground/50 backdrop-blur-sm p-4 flex justify-between fixed z-50">
       <Link href="/" className="flex items-center gap-2">
-        <ChevronLeft className="h-4 w-4 text-white" />
+      {pathname !== "/" && (
+        <ChevronLeft className="h-4 w-4 text-white" />)}
         <Image
           src={logo}
           alt="Só-nós Dois"

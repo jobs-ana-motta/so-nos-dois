@@ -29,6 +29,8 @@ import {
 import { Calendar } from "@/components/ui/calendar";
 import { ptBR } from "date-fns/locale";
 import { format } from "date-fns";
+import { dataUrlToFile } from "@/lib/dataUrlTofile";
+import { objectToFormData } from "@/lib/objectToFormData";
 
 const EMOJIS = [
   "❤️",
@@ -96,14 +98,30 @@ export default function Create() {
     setCroppedAreaPixels(croppedPixels);
   }, []);
 
-  const handleSubmit = (
+  const handleSubmit = async (
     values: any,
     {
       setSubmitting,
       resetForm,
     }: { setSubmitting: (isSubmitting: boolean) => void; resetForm: () => void }
   ) => {
-    console.log(values);
+
+    const file = dataUrlToFile(values.file)
+    const formateddValues = {...values, file}
+    formateddValues.nome = `${values.nome1} e ${values.nome2}`
+    delete formateddValues.nome1
+    delete formateddValues.nome2
+    const sendValues = objectToFormData(formateddValues)
+
+    const response = await fetch("/api/casal", {
+      method: "POST",
+      body: sendValues,
+    });
+
+    const data =  await response.json()
+
+    console.log("aaaaaaaa", data)
+
     setFullImage("");
     setSelectedEmoji("");
     setSelectedColor("");
@@ -140,12 +158,12 @@ export default function Create() {
                 croppedAreaPixels!
               );
               setFullImage(croppedImage);
-              setFieldValue("imagem", croppedImage);
+              setFieldValue("file", croppedImage);
               setModalOpen(false);
             };
 
             const removeImg = () => {
-                setFieldValue("image", "")
+                setFieldValue("file", "")
                 setFullImage("")
             }
             return (

@@ -5,5 +5,5 @@ export const initialValues = {
     message: "",
     emoji: "",
     cor: "",
-    imagem: ""
+    file: ""
 }

@@ -7,10 +7,10 @@ import { z } from "zod";
 
 const casalSchema = z.object({
   nome: z.string().min(1, "Nome obrigatorio"),
-  mensagem: z.string().min(1, "Mensagem obrigatorio"),
+  message: z.string().min(1, "Mensagem obrigatorio"),
   emoji: z.string().min(1, "Emoji obrigatorio"),
-  dataInicio: z.string().min(1, "Data de inicio obrigatorio"),
-  corFundo: z.string().min(1, "Cor de fundo obrigatorio"),
+  data: z.string().min(1, "Data de inicio obrigatorio"),
+  cor: z.string().min(1, "Cor de fundo obrigatorio"),
   fotoUrl: z.string().min(1, "Url da foto obrigatorio"),
   paid: z.boolean().default(false),
 });
@@ -33,6 +33,7 @@ export async function POST(request: NextRequest) {
     const parsed = casalSchema.safeParse({ ...fields, fotoUrl, paid : false });
 
     if (!parsed.success) {
+      console.log("aqui")
       return NextResponse.json(
         { error: "Erro de validação", detalhes: parsed.error.flatten() },
         { status: 400 }

@@ -7,8 +7,6 @@ export default function PageCasal() {
   const [timeTogether, setTimeTogether] = useState("");
   const { id } = useParams();
 
-  console.log()
-
   useEffect(() => {
     const startDate = new Date("2021-03-09T18:00:00");
     const interval = setInterval(() => {

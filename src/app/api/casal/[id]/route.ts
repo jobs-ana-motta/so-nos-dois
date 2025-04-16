@@ -24,7 +24,7 @@ export async function GET(
             return NextResponse.json({ error: "Casal nao pago" }, { status: 403 });
         }
         let data = snapshot.data()
-        let info = { fotoUrl: data.fotoUrl, cor: data.cor, emoji: data.emoji, data: data.data, nome: data.nome, message: data.message };
+        let info = { fotoUrl: data.fotoUrl, cor: data.cor, emoji: data.emoji, data: data.data, nome: data.nome, message: data.message, paid: data.paid };
         return NextResponse.json(info, { status: 200 });
     } catch (error) {
         return NextResponse.json({ error: "Erro ao buscar casal" }, { status: 500 });

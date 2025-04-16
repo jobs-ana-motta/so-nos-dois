@@ -13,7 +13,7 @@ async function uploadToCloudinary(file:File, folder :string) {
     const buffer = Buffer.from(arrayBuffer);
 
     const optimizedBuffer = await sharp(buffer)
-        .webp({ quality: 80 })
+        .webp({ quality: 100 })
         .toBuffer();
 
     return new Promise<string>((resolve, reject) => {

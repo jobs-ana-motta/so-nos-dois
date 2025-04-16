@@ -31,6 +31,8 @@ import { ptBR } from "date-fns/locale";
 import { format } from "date-fns";
 import { dataUrlToFile } from "@/lib/dataUrlTofile";
 import { objectToFormData } from "@/lib/objectToFormData";
+import { useRouter } from "next/navigation";
+import { validationSchema } from "./forms/validationSchema";
 
 const EMOJIS = [
   "❤️",
@@ -83,6 +85,8 @@ export default function Create() {
   const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
   const [fullImage, setFullImage] = useState("");
 
+  const router = useRouter();
+
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -105,28 +109,29 @@ export default function Create() {
       resetForm,
     }: { setSubmitting: (isSubmitting: boolean) => void; resetForm: () => void }
   ) => {
-
-    const file = dataUrlToFile(values.file)
-    const formateddValues = {...values, file}
-    formateddValues.nome = `${values.nome1} e ${values.nome2}`
-    delete formateddValues.nome1
-    delete formateddValues.nome2
-    const sendValues = objectToFormData(formateddValues)
+    const file = dataUrlToFile(values.file);
+    const formateddValues = { ...values, file };
+    formateddValues.nome = `${values.nome1} e ${values.nome2}`;
+    delete formateddValues.nome1;
+    delete formateddValues.nome2;
+    const sendValues = objectToFormData(formateddValues);
 
     const response = await fetch("/api/casal", {
       method: "POST",
       body: sendValues,
     });
 
-    const data =  await response.json()
-
-    console.log("aaaaaaaa", data)
+    const data = await response.json();
 
     setFullImage("");
     setSelectedEmoji("");
     setSelectedColor("");
     setSubmitting(false);
     resetForm();
+
+    if (response.status === 201) {
+      router.push(`/gratidao?id=${data.id}`);
+    }
   };
 
   return (
@@ -141,7 +146,11 @@ export default function Create() {
           </p>
         </div>
 
-        <Formik initialValues={initialValues} onSubmit={handleSubmit}>
+        <Formik
+          initialValues={initialValues}
+          onSubmit={handleSubmit}
+          validationSchema={validationSchema}
+        >
           {({
             values,
             errors,
@@ -163,9 +172,9 @@ export default function Create() {
             };
 
             const removeImg = () => {
-                setFieldValue("file", "")
-                setFullImage("")
-            }
+              setFieldValue("file", "");
+              setFullImage("");
+            };
             return (
               <Form className="w-full flex items-center flex-col p-4 bg-[#1f1f1f] rounded shadow-md gap-4 md:min-w-[768px]">
                 <div className="flex w-full justify-between gap-4">
@@ -180,6 +189,11 @@ export default function Create() {
                       onChange={handleChange}
                       onBlur={handleBlur}
                     />
+                    {errors.nome1 && touched.nome1 ? (
+                      <div className="text-[#D22630] text-xs">{errors.nome1}</div>
+                    ) : (
+                      " "
+                    )}
                   </div>
                   <div className="flex flex-col gap-2 w-full">
                     <p className="text-md flex gap-2 items-center">
@@ -192,6 +206,11 @@ export default function Create() {
                       onChange={handleChange}
                       onBlur={handleBlur}
                     />
+                    {errors.nome2 && touched.nome2 ? (
+                      <div className="text-[#D22630] text-xs">{errors.nome2}</div>
+                    ) : (
+                      <div>{""}</div>
+                    )}
                   </div>
                 </div>
 
@@ -232,6 +251,12 @@ export default function Create() {
                       );
                     }}
                   </Field>
+
+                  {errors.data && touched.data ? (
+                    <div className="text-[#D22630] text-xs">{errors.data}</div>
+                  ) : (
+                    <div>{""}</div>
+                  )}
                 </div>
 
                 <div className="w-full flex flex-col gap-2">
@@ -247,6 +272,11 @@ export default function Create() {
                     onChange={handleChange}
                     onBlur={handleBlur}
                   />
+                  {errors.message && touched.message ? (
+                    <div className="text-[#D22630] text-xs">{errors.message}</div>
+                  ) : (
+                    <div>{""}</div>
+                  )}
                 </div>
 
                 <div className="w-full flex flex-col gap-2">
@@ -271,6 +301,12 @@ export default function Create() {
                       </Button>
                     ))}
                   </div>
+
+                  {errors.emoji && touched.emoji ? (
+                    <div className="text-[#D22630] text-xs">{errors.emoji}</div>
+                  ) : (
+                    <div>{""}</div>
+                  )}
                 </div>
 
                 <div className="w-full flex flex-col gap-2">
@@ -298,6 +334,12 @@ export default function Create() {
                       />
                     ))}
                   </div>
+
+                  {errors.cor && touched.cor ? (
+                    <div className="text-[#D22630] text-xs">{errors.cor}</div>
+                  ) : (
+                    <div>{""}</div>
+                  )}
                 </div>
 
                 <div className="w-full flex flex-col gap-2">
@@ -318,6 +360,12 @@ export default function Create() {
                         Clique para fazer upload
                       </div>
                     </label>
+
+                    {errors.file && touched.file ? (
+                    <div className="text-[#D22630] text-xs">{errors.file}</div>
+                  ) : (
+                    <div>{""}</div>
+                  )}
 
                     <Dialog open={modalOpen} onOpenChange={setModalOpen}>
                       <DialogTitle className="hidden">

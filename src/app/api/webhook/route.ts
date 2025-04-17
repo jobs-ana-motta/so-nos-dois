@@ -9,12 +9,12 @@ export const config = {
   },
 };
 
-const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET!;
 
 export async function POST(req: NextRequest) {
     const sig = req.headers.get("stripe-signature")!;
     const rawBody = await req.text(); // body como texto cru, essencial pra verificação do Stripe
   
+    const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET!;
     let event;
     try {
       event = stripe.webhooks.constructEvent(

@@ -16,7 +16,6 @@ export async function PATCH(
 
   const secret = searchParams.get("secret");
 
-  console.log(secret)
 
   if (!id) {
     return NextResponse.json({ error: "ID não fornecido" }, { status: 400 });

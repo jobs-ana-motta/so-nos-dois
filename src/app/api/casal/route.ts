@@ -33,7 +33,6 @@ export async function POST(request: NextRequest) {
     const parsed = casalSchema.safeParse({ ...fields, fotoUrl, paid : false });
 
     if (!parsed.success) {
-      console.log("aqui")
       return NextResponse.json(
         { error: "Erro de validação", detalhes: parsed.error.flatten() },
         { status: 400 }

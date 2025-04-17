@@ -1,8 +1,7 @@
 import { stripe } from "@/lib/stripe";
-import { buffer } from "micro";
-import { NextApiRequest, NextApiResponse } from "next";
 import { db } from "@/lib/firebase";
 import { doc, updateDoc } from "firebase/firestore";
+import { NextRequest, NextResponse } from "next/server";
 
 export const config = {
   api: {
@@ -12,34 +11,35 @@ export const config = {
 
 const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET!;
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const buf = await buffer(req);
-  const sig = req.headers["stripe-signature"] as string;
-
-  let event;
-
-  try {
-    event = stripe.webhooks.constructEvent(buf, sig, endpointSecret);
-  } catch (err: any) {
-    console.error("Webhook signature error:", err.message);
-    return res.status(400).send(`Webhook Error: ${err.message}`);
-  }
-
-  if (event.type === "checkout.session.completed") {
-    const session = event.data.object as any;
-    const casalId = session.metadata?.casalId;
-
-    if (casalId) {
-      try {
-        await updateDoc(doc(db, "casais", casalId), {
-          paid: true,
-        });
-        console.log(`✅ Pagamento confirmado e casal ${casalId} marcado como pago.`);
-      } catch (err) {
-        console.error("Erro ao atualizar casal como pago:", err);
+export async function POST(req: NextRequest) {
+    const sig = req.headers.get("stripe-signature")!;
+    const rawBody = await req.text(); // body como texto cru, essencial pra verificação do Stripe
+  
+    let event;
+    try {
+      event = stripe.webhooks.constructEvent(
+        rawBody,
+        sig,
+        endpointSecret
+      );
+    } catch (err: any) {
+      console.error("❌ Webhook signature verification failed:", err.message);
+      return new NextResponse(`Webhook Error: ${err.message}`, { status: 400 });
+    }
+  
+    if (event.type === "checkout.session.completed") {
+      const session = event.data.object as any;
+      const casalId = session.metadata?.casalId;
+  
+      if (casalId) {
+        try {
+          await updateDoc(doc(db, "casais", casalId), { paid: true });
+          console.log("✅ Pagamento confirmado para o casal:", casalId);
+        } catch (err) {
+          console.error("Erro ao atualizar o casal no Firestore:", err);
+        }
       }
     }
+  
+    return NextResponse.json({ received: true });
   }
-
-  res.json({ received: true });
-}

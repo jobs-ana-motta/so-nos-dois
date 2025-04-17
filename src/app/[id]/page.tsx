@@ -112,7 +112,7 @@ export default function PageCasal() {
             className={` mb-4 font-poppins font-bold ${narnoor.className}`}
             style={{ color: cor }}
           >
-            Juntos à:
+            Juntos há:
           </p>
           <Message color={cor} date={casal ? casal.data : new Date()} />
 

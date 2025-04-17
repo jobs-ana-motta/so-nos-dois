@@ -37,8 +37,10 @@ export default function PageCasal() {
 
   const router = useRouter();
   const gradient = casal
-    ? `linear-gradient(to top, ${casal.cor}, ${lighten(casal.cor, 0.2)})`
+    ? `linear-gradient(to top, ${casal.cor}, ${lighten(casal.cor, 0.4)})`
     : undefined;
+
+  const cor = casal ? casal.cor : "white";
 
   useEffect(() => {
     async function loadCasal() {
@@ -65,12 +67,18 @@ export default function PageCasal() {
 
   return (
     <div
-      className={`min-h-screen p-4 flex justify-center items-center`}
+      className={`min-h-screen p-2 flex justify-center items-center`}
       style={gradient ? { backgroundImage: gradient } : undefined}
     >
-      <div className={`border border-[${casal?.cor}] rounded-xl p-4 h-full`}>
+      <div
+        className={`rounded-xl p-2 h-full my-3`}
+        style={{ border: `1px solid white` }}
+      >
         <div
-          className={`bg-white/80 shadow-xl rounded-lg p-6 w-full text-center relative ${`shadow-[${casal?.cor}]`}`}
+          className={`bg-white/80 shadow-xl rounded-lg p-6 w-full text-center flex justify-center flex-col items-center gap-3 relative ${`shadow-[${lighten(
+            cor,
+            0.1
+          )}]`}`}
         >
           <div
             className="absolute inset-0 bg-[url('/sunflower.png')] bg-contain bg-no-repeat bg-bottom pointer-events-none"
@@ -84,41 +92,38 @@ export default function PageCasal() {
               height={640}
               quality={100}
               className="rounded-lg"
+              priority={true}
+              objectFit="cover"
+              sizes="(max-width: 768px) 100vw, 400px"
             />
           </div>
           <h1
-            className={`text-6xl text-[${casal ? casal.cor : ""}] mb-2 ${rouge.className}`}
+            className={`text-6xl mb-2 ${rouge.className}`}
+            style={{ color: cor }}
           >
             {casal?.nome}
           </h1>
-          <p className={`text-[${casal?.cor}] mb-4 font-poppins font-bold`}>
+          <p
+            className={` mb-4 font-poppins font-bold ${narnoor.className}`}
+            style={{ color: cor }}
+          >
             Juntos à:
           </p>
-          <Message
-            color={casal ? casal?.cor : ""}
-            date={casal ? casal.data : new Date()}
-          />
+          <Message color={cor} date={casal ? casal.data : new Date()} />
 
-            <div className={`flex flex-col gap-4 text-center text-foreground ${narnoor.className} p-2 max-w-[500px]`}>
-              <p>
-                Meu amor, hoje é o seu dia, e eu só quero te lembrar o quanto
-                você é incrível e especial para mim. Você tem uma forma única de
-                iluminar minha vida e me fazer sorrir todos os dias.
-              </p>
-
-              <p>
-                Sou muito grato por ter você ao meu lado e por cada momento que
-                passamos juntos. Que esse novo ano seja cheio de sonhos
-                realizados, risadas, amor e tudo o que te faz feliz.
-              </p>
-
-              <p>
-                Te amo demais, e vou continuar celebrando você, hoje e sempre!
-                
-              </p>
-            </div>
+          <div
+            className={`flex flex-col gap-4 text-center font-bold ${narnoor.className} p-2 max-w-[500px]`}
+            style={{ color: cor }}
+          >
+            <p>
+            {casal ? casal.message : ""}
+            </p>
           </div>
+          <hr className="w-40"   style={{ border: `1px solid ${cor}` }}/>
+
+          <h1 className="text-7xl">{casal ? casal.emoji : ""}</h1>
         </div>
       </div>
+    </div>
   );
 }

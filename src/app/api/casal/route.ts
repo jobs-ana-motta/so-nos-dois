@@ -4,15 +4,15 @@ import { formDataToObject } from "@/lib/formDataToObject";
 import { addDoc, collection, Timestamp } from "firebase/firestore";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
+import { stripe } from "@/lib/stripe";
 
 const casalSchema = z.object({
   nome: z.string().min(1, "Nome obrigatorio"),
-  message: z.string().min(1, "Mensagem obrigatorio"),
+  message: z.string().min(1, "Mensagem obrigatoria"),
   emoji: z.string().min(1, "Emoji obrigatorio"),
-  data: z.string().min(1, "Data de inicio obrigatorio"),
-  cor: z.string().min(1, "Cor de fundo obrigatorio"),
-  fotoUrl: z.string().min(1, "Url da foto obrigatorio"),
-  paid: z.boolean().default(false),
+  data: z.string().min(1, "Data de início obrigatoria"),
+  cor: z.string().min(1, "Cor de fundo obrigatoria"),
+  fotoUrl: z.string().min(1, "Foto obrigatoria"),
 });
 
 export async function POST(request: NextRequest) {
@@ -21,35 +21,44 @@ export async function POST(request: NextRequest) {
     const file = formData.get("file") as File | null;
 
     if (!file) {
-      return NextResponse.json(
-        { error: "Imagem não enviada" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "Imagem não enviada" }, { status: 400 });
     }
 
-    const fields = formDataToObject(formData); // transforma tudo em um objeto
-
+    const fields = formDataToObject(formData);
     const fotoUrl = await uploadToCloudinary(file, "casais");
-    const parsed = casalSchema.safeParse({ ...fields, fotoUrl, paid : false });
+    console.log(fields)
+    const parsed = casalSchema.safeParse({ ...fields, fotoUrl });
 
     if (!parsed.success) {
-      return NextResponse.json(
-        { error: "Erro de validação", detalhes: parsed.error.flatten() },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "Erro de validação", detalhes: parsed.error.flatten() }, { status: 400 });
     }
 
+    // Cria no banco com paid = false
     const docRef = await addDoc(collection(db, "casais"), {
       ...parsed.data,
+      paid: false,
       criadoEm: Timestamp.now(),
     });
-    let url =  `${process.env.PUBLIC_URL}/api/casal/${docRef.id}`
-    return NextResponse.json({ id: docRef.id, ok: true, url }, { status: 201 });
+
+    // Cria sessão de pagamento com ID do casal
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ["card"],
+      mode: "payment",
+      line_items: [
+        {
+          price : "price_1REsxwI5x5OjuFNNIBTLkDX9",  
+          quantity: 1,
+        },
+      ],
+      success_url: `${process.env.PUBLIC_URL}/gratidao?id=${docRef.id}`,
+      cancel_url: `${process.env.PUBLIC_URL}/pendente?id=${docRef.id}`,
+      metadata: {
+        casalId: docRef.id,
+      },
+    });
+    return NextResponse.json({ checkoutUrl: session.url });
   } catch (error) {
-    console.error("❌ Erro em /api/casal:", error);
-    return NextResponse.json(
-      { error: "Erro interno ao salvar no Firebase", detalhes: error },
-      { status: 500 }
-    );
+    console.error("❌ Erro ao criar casal:", error);
+    return NextResponse.json({ error: "Erro interno", detalhes: error }, { status: 500 });
   }
 }

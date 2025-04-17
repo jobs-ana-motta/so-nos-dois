@@ -126,7 +126,7 @@ export default function Create() {
     });
 
     const data = await response.json();
-
+    console.log(data)
     setFullImage("");
     setSelectedEmoji("");
     setSelectedColor("");
@@ -134,8 +134,11 @@ export default function Create() {
     setLoading(false);
     resetForm();
 
-    if (response.status === 201) {
-      router.push(`/gratidao?id=${data.id}`);
+    if (response.ok && data.checkoutUrl) {
+      window.location.href = data.checkoutUrl;
+    } else {
+      alert("Erro ao criar sessão de pagamento.");
+      console.error(data);
     }
   };
 

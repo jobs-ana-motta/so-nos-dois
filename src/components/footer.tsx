@@ -17,6 +17,8 @@ export default function Footer() {
           © {new Date().getFullYear()} Só-nós Dois. Todos os direitos
           reservados.
         </p>
+
+        <p className="mt-2 text-center">Entre em contato: (43) 99917-9636</p>
     </footer>
   );
 }

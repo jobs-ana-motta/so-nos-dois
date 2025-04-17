@@ -42,7 +42,7 @@ export async function POST(request: NextRequest) {
 
     // Cria sessão de pagamento com ID do casal
     const session = await stripe.checkout.sessions.create({
-      payment_method_types: ["card"],
+      payment_method_types: ["card", "pix"],
       mode: "payment",
       line_items: [
         {

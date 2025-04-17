@@ -26,13 +26,14 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { Calendar } from "@/components/ui/calendar";
 import { ptBR } from "date-fns/locale";
 import { format } from "date-fns";
 import { dataUrlToFile } from "@/lib/dataUrlTofile";
 import { objectToFormData } from "@/lib/objectToFormData";
 import { useRouter } from "next/navigation";
 import { validationSchema } from "./forms/validationSchema";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 const EMOJIS = [
   "❤️",
@@ -242,11 +243,24 @@ export default function Create() {
                             </Button>
                           </PopoverTrigger>
                           <PopoverContent className="w-full p-0">
-                            <Calendar
+                            {/* <Calendar
                               mode="single"
                               selected={values.data ? values.data : new Date()}
                               onSelect={(d) => form.setFieldValue("data", d)}
                               locale={ptBR}
+                            /> */}
+                            <DatePicker
+                              selected={values.data ? values.data : new Date()}
+                              onChange={(d) => {
+                                form.setFieldValue("data", d)
+                              }}
+                              dateFormat={"dd/MM/yyyy"}
+                              showMonthDropdown
+                              showYearDropdown
+                              dropdownMode="select"
+                              locale={ptBR}
+                              className="w-full p-2 text-sm rounded-md focus:outline-none"
+                              inline 
                             />
                           </PopoverContent>
                         </Popover>
@@ -294,7 +308,6 @@ export default function Create() {
                         variant={selectEmoji === emoji ? "secondary" : "ghost"}
                         className={cn("h-10 w-10 p-0 text-xl cursor-pointer")}
                         onClick={() => {
-                          console.log(emoji);
                           setSelectedEmoji(emoji);
                           setFieldValue("emoji", emoji);
                         }}
@@ -421,6 +434,7 @@ export default function Create() {
                   onClick={() => handleSubmit()}
                   className="bg-[#D22630] w-full"
                   disabled={isSubmitting}
+                  type="submit"
                 >
                   Criar sua página
                 </Button>

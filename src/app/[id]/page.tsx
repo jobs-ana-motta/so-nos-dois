@@ -6,6 +6,7 @@ import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Narnoor, Rouge_Script } from "next/font/google";
+import { QrSharePopover } from "@/components/qrcode";
 
 interface Casal {
   cor: string;
@@ -30,9 +31,9 @@ const rouge = Rouge_Script({
 });
 
 export default function PageCasal() {
-  const [timeTogether, setTimeTogether] = useState("");
   const [casal, setCasal] = useState<Casal | null>(null);
   const [loading, setLoading] = useState(true);
+  const [url, setUrl] = useState("")
   const { id } = useParams();
 
   const router = useRouter();
@@ -60,6 +61,11 @@ export default function PageCasal() {
       router.push("/404");
     }
   }, []);
+
+  useEffect(() => {
+    setUrl(window.location.href)
+    console.log(window.location.href)
+  }, [])
 
   if (loading) {
     return <Loading />;
@@ -91,9 +97,8 @@ export default function PageCasal() {
               width={401}
               height={640}
               quality={100}
-              className="rounded-lg"
-              priority={true}
-              objectFit="cover"
+              className="rounded-2xl object-contain w-full h-auto max-w-[401px]"
+              priority
               sizes="(max-width: 768px) 100vw, 400px"
             />
           </div>
@@ -122,6 +127,8 @@ export default function PageCasal() {
           <hr className="w-40"   style={{ border: `1px solid ${cor}` }}/>
 
           <h1 className="text-7xl">{casal ? casal.emoji : ""}</h1>
+
+          <QrSharePopover url={url} cor={cor} />
         </div>
       </div>
     </div>

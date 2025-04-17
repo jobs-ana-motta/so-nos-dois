@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { intervalToDuration } from "date-fns";
 import { Narnoor } from "next/font/google";
+import { lighten } from "@/lib/rgbColor";
 
 const narnoor = Narnoor({
   weight: "400",
@@ -58,7 +59,7 @@ export const Message = ({ date, color }  : PropsMessage) => {
   }, [startDate]);
 
   return (
-    <p className={`text-[${color}] font-bold`}>
+    <p className={`font-bold ${narnoor.className} text-xl`} style={{color: color}}>
       {timeElapsed}
     </p>
   );

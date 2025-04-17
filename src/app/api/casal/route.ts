@@ -46,7 +46,7 @@ export async function POST(request: NextRequest) {
       mode: "payment",
       line_items: [
         {
-          price : "price_1REsxwI5x5OjuFNNIBTLkDX9",  
+          price : process.env.STRIPE_PRICE_ID!,  
           quantity: 1,
         },
       ],

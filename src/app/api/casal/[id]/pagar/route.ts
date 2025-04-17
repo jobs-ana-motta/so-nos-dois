@@ -5,11 +5,12 @@ import { NextRequest, NextResponse } from "next/server";
 // 🔐 senha que será usada na query, define no .env se quiser
 const PASSWORD = process.env.UPDATE_SECRET || "1234";
 
+// @ts-ignore
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  {params}: {params: Promise<{ id: string }>}
 ) {
-  const id = params.id;
+  const { id } = await params;
   const { searchParams } = new URL(request.url);
   const secret = searchParams.get("secret");
 

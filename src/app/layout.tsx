@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Só nos dois",
+  title: "Só nós dois",
   description: "Românticos",
 };
 

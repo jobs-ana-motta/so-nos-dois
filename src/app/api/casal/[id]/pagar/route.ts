@@ -11,8 +11,12 @@ export async function PATCH(
   {params}: {params: Promise<{ id: string }>}
 ) {
   const { id } = await params;
+
   const { searchParams } = new URL(request.url);
+
   const secret = searchParams.get("secret");
+
+  console.log(secret)
 
   if (!id) {
     return NextResponse.json({ error: "ID não fornecido" }, { status: 400 });

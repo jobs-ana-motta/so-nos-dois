@@ -12,6 +12,7 @@ import {
   Smile,
   Palette,
   Upload,
+  Loader,
 } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
@@ -85,6 +86,7 @@ export default function Create() {
   const [imageSrc, setImageSrc] = useState<string | null>(null);
   const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
   const [fullImage, setFullImage] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const router = useRouter();
 
@@ -110,6 +112,7 @@ export default function Create() {
       resetForm,
     }: { setSubmitting: (isSubmitting: boolean) => void; resetForm: () => void }
   ) => {
+    setLoading(true);
     const file = dataUrlToFile(values.file);
     const formateddValues = { ...values, file };
     formateddValues.nome = `${values.nome1} e ${values.nome2}`;
@@ -128,9 +131,8 @@ export default function Create() {
     setSelectedEmoji("");
     setSelectedColor("");
     setSubmitting(false);
+    setLoading(false);
     resetForm();
-
-    console.log(data, response.status)
 
     if (response.status === 201) {
       router.push(`/gratidao?id=${data.id}`);
@@ -140,7 +142,7 @@ export default function Create() {
   return (
     <div className="flex w-full h-screen flex-col items-center gap-5">
       <Header />
-      <main className="flex-1 flex items-center flex-col gap-4 p-2">
+      <main className="flex-1 flex items-center flex-col gap-4 p-2 mt-20">
         <div className="flex flex-col items-center">
           <h1 className="font-bold text-2xl">Crie sua página especial</h1>
           <p className="text-gray-300 text-sm text-center">
@@ -335,7 +337,7 @@ export default function Create() {
                         key={color}
                         type="button"
                         className={cn(
-                          "h-6 w-6 rounded-full border-2",
+                          "h-6 w-6 rounded-full border-2 cursor-pointer",
                           colorSel === color
                             ? "border-white ring-2 ring-primary"
                             : "border-transparent"
@@ -432,11 +434,16 @@ export default function Create() {
 
                 <Button
                   onClick={() => handleSubmit()}
-                  className="bg-[#D22630] w-full"
+                  className="bg-[#D22630] w-full cursor-pointer"
                   disabled={isSubmitting}
                   type="submit"
                 >
-                  Criar sua página
+                  {loading ? (
+                    <div className="flex items-center justify-center gap-2">
+                      <p className="font-semibold text-gray-400 opacity-90">Carregando...</p>
+                      <Loader className="h-5 w-5 animate-spin"/>
+                    </div>
+                  ) :  "Criar sua página"}
                 </Button>
               </Form>
             );

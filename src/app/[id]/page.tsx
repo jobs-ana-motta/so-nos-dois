@@ -75,7 +75,7 @@ export default function PageCasal() {
         style={{ border: `1px solid white` }}
       >
         <div
-          className={`bg-white/80 shadow-xl rounded-lg p-6 w-full text-center flex justify-center flex-col items-center gap-3 relative ${`shadow-[${lighten(
+          className={`bg-white/80 shadow-xl rounded-lg p-3 w-full text-center flex justify-center flex-col items-center gap-3 relative ${`shadow-[${lighten(
             cor,
             0.1
           )}]`}`}

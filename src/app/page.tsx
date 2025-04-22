@@ -3,7 +3,6 @@ import Header from "@/components/header";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
-  Calendar,
   Check,
   Clock,
   Cloud,
@@ -11,16 +10,12 @@ import {
   Heart,
   ImageIcon,
   Infinity,
-  LinkIcon,
   Lock,
   Map,
-  MessageSquare,
   Palette,
   Puzzle,
   QrCode,
-  ScanLine,
   Smartphone,
-  Smile,
   Sparkles,
   Star,
   Wine,
@@ -167,7 +162,7 @@ export default function Home() {
                 <div className="mt-10 grid gap-6 sm:grid-cols-3">
                   <div className="rounded-xl border border-white/5 bg-[#141414]/50 p-6 backdrop-blur-sm">
                     <div className="text-3xl font-bold text-[#D22630]">
-                      R$34,99
+                      R$14,99
                     </div>
                     <div className="mt-2 text-sm text-muted-foreground">
                       Pagamento único
@@ -272,7 +267,7 @@ export default function Home() {
                   </div>
                   <h3 className="mb-2 text-xl font-medium">Preserve</h3>
                   <p className="text-muted-foreground">
-                    Após o pagamento único de R$34,99, sua página fica online
+                    Após o pagamento único de R$14,99, sua página fica online
                     continuamente na nuvem.
                   </p>
                 </div>
@@ -308,7 +303,7 @@ export default function Home() {
                           <span className="line-through">R$49,99</span>
                         </div>
                         <div className="bg-[#D22630]  bg-clip-text text-3xl font-bold text-transparent">
-                          R$34,99
+                          R$14,99
                         </div>
                         <p className="text-sm text-muted-foreground">
                           Pagamento único
@@ -404,7 +399,7 @@ export default function Home() {
                 <div className="flex flex-col items-center gap-6 sm:flex-row">
                   <div className="flex-1">
                     <h3 className="text-xl font-medium">
-                      Transforme R$34,99 em memórias duradouras
+                      Transforme R$14,99 em memórias duradouras
                     </h3>
                     <p className="mt-2 text-muted-foreground">
                       Enquanto flores murcham e chocolates acabam, sua página
@@ -434,7 +429,7 @@ export default function Home() {
                   </h2>
                   <p className="mt-4 text-lg text-muted-foreground">
                     Por apenas{" "}
-                    <span className="font-bold text-[#D22630]">R$34,99</span>,
+                    <span className="font-bold text-[#D22630]">R$14,99</span>,
                     crie uma página única e surpreenda com um presente que
                     combina tecnologia e romantismo.
                   </p>

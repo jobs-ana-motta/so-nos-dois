@@ -319,7 +319,6 @@ export default function Home() {
                       <PricingItem text="Link exclusivo personalizado" />
                       <PricingItem text="Design responsivo" />
                       <PricingItem text="Suporte técnico" />
-                      <PricingItem text="Atualizações gratuitas" />
                     </div>
 
                     <Button

@@ -5,5 +5,5 @@ export const initialValues = {
     message: "",
     emoji: "",
     cor: "",
-    file: ""
+    file:  [] as string[]
 }

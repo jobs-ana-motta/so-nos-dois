@@ -7,6 +7,8 @@ import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Narnoor, Rouge_Script } from "next/font/google";
 import { QrSharePopover } from "@/components/qrcode";
+import { Carousel, CarouselContent, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
+import ImagePreview from "@/components/imagePreview";
 
 interface Casal {
   cor: string;
@@ -33,7 +35,7 @@ const rouge = Rouge_Script({
 export default function PageCasal() {
   const [casal, setCasal] = useState<Casal | null>(null);
   const [loading, setLoading] = useState(true);
-  const [url, setUrl] = useState("")
+  const [url, setUrl] = useState("");
   const { id } = useParams();
 
   const router = useRouter();
@@ -63,9 +65,9 @@ export default function PageCasal() {
   }, []);
 
   useEffect(() => {
-    setUrl(window.location.href)
-    console.log(window.location.href)
-  }, [])
+    setUrl(window.location.href);
+    // console.log(window.location.href);
+  }, []);
 
   if (loading) {
     return <Loading />;
@@ -91,16 +93,7 @@ export default function PageCasal() {
             aria-hidden="true"
           />
           <div className="relative h-96 w-full mb-4 rounded-lg overflow-hidden flex justify-center">
-            <Image
-              src={casal ? casal.fotoUrl : ""}
-              alt="Ana e Gui"
-              width={401}
-              height={640}
-              quality={100}
-              className="rounded-2xl object-contain w-full h-auto max-w-[401px]"
-              priority
-              sizes="(max-width: 768px) 100vw, 400px"
-            />
+            <ImagePreview src={casal?.fotoUrl!}/>
           </div>
           <h1
             className={`text-6xl mb-2 ${rouge.className}`}
@@ -120,11 +113,9 @@ export default function PageCasal() {
             className={`flex flex-col gap-4 text-center font-bold ${narnoor.className} p-2 max-w-[500px]`}
             style={{ color: cor }}
           >
-            <p>
-            {casal ? casal.message : ""}
-            </p>
+            <p>{casal ? casal.message : ""}</p>
           </div>
-          <hr className="w-40"   style={{ border: `1px solid ${cor}` }}/>
+          <hr className="w-40" style={{ border: `1px solid ${cor}` }} />
 
           <h1 className="text-7xl">{casal ? casal.emoji : ""}</h1>
 

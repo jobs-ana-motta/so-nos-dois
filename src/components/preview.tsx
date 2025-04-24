@@ -7,6 +7,7 @@ import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Narnoor, Rouge_Script } from "next/font/google";
 import { QrSharePopover } from "@/components/qrcode";
+import ImagePreview from "./imagePreview";
 
 interface Casal {
   cor: string;
@@ -14,7 +15,7 @@ interface Casal {
   emoji: string;
   message: string;
   nome: string;
-  fotoUrl: string;
+  fotosUrl: string[] | null;
 }
 
 const narnoor = Narnoor({
@@ -33,7 +34,7 @@ export default function Preview({
   cor,
   data,
   emoji,
-  fotoUrl,
+  fotosUrl,
   message,
   nome,
 }: Casal) {
@@ -58,18 +59,19 @@ export default function Preview({
             className="absolute inset-0 bg-[url('/sunflower.png')] bg-contain bg-no-repeat bg-bottom pointer-events-none"
             aria-hidden="true"
           />
-          {fotoUrl && (
+
+          <iframe
+            src="https://open.spotify.com/embed/track/3LodnEuvawlcOLBD3ssDt7?utm_source=generator"
+            width="100%"
+            height="100"
+            frameBorder="0"
+            allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+            loading="lazy"
+          ></iframe>
+
+          {fotosUrl && (
             <div className="relative h-96 w-full mb-4 rounded-lg overflow-hidden flex justify-center">
-              <Image
-                src={fotoUrl}
-                alt="Ana e Gui"
-                width={401}
-                height={640}
-                quality={100}
-                className="rounded-2xl object-contain w-full h-auto max-w-[401px]"
-                priority
-                sizes="(max-width: 768px) 100vw, 400px"
-              />
+              <ImagePreview src={fotosUrl} />
             </div>
           )}
           <h1
@@ -85,9 +87,7 @@ export default function Preview({
             Juntos há:
           </p>
 
-          {data && (
-            <Message color={cor} date={data} />
-          )}
+          {data && <Message color={cor} date={data} />}
 
           <div
             className={`flex flex-col gap-4 text-center font-bold ${narnoor.className} p-2 w-[320px]`}

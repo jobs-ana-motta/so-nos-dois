@@ -7,7 +7,12 @@ import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Narnoor, Rouge_Script } from "next/font/google";
 import { QrSharePopover } from "@/components/qrcode";
-import { Carousel, CarouselContent, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
 import ImagePreview from "@/components/imagePreview";
 
 interface Casal {
@@ -83,7 +88,7 @@ export default function PageCasal() {
         style={{ border: `1px solid white` }}
       >
         <div
-          className={`bg-white/80 shadow-xl rounded-lg p-3 w-full text-center flex justify-center flex-col items-center gap-3 relative ${`shadow-[${lighten(
+          className={`bg-white/80 shadow-xl rounded-lg p-3 max-w-[450px] text-center flex justify-center flex-col items-center gap-3 relative ${`shadow-[${lighten(
             cor,
             0.1
           )}]`}`}
@@ -92,8 +97,16 @@ export default function PageCasal() {
             className="absolute inset-0 bg-[url('/sunflower.png')] bg-contain bg-no-repeat bg-bottom pointer-events-none"
             aria-hidden="true"
           />
+          <iframe
+            src="https://open.spotify.com/embed/track/3LodnEuvawlcOLBD3ssDt7?utm_source=generator"
+            width="100%"
+            height="100"
+            frameBorder="0"
+            allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+            loading="lazy"
+          ></iframe>
           <div className="relative h-96 w-full mb-4 rounded-lg overflow-hidden flex justify-center">
-            <ImagePreview src={casal?.fotoUrl!}/>
+            <ImagePreview src={casal?.fotoUrl!} />
           </div>
           <h1
             className={`text-6xl mb-2 ${rouge.className}`}

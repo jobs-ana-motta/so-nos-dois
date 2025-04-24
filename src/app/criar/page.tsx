@@ -489,7 +489,7 @@ export default function Create() {
             emoji={previewData.emoji}
             message={previewData.message}
             nome={`${previewData.nome1} e ${previewData.nome2}`}
-            fotoUrl={previewData.file[0]}
+            fotosUrl={previewData.file}
           />
         </div>
       </main>

@@ -122,7 +122,7 @@ export default function Create() {
     formateddValues.idMusic = values.music.id
     delete formateddValues.nome1;
     delete formateddValues.nome2;
-    delete formateddValues.music
+    delete formateddValues.music;
     const sendValues = objectToFormData(formateddValues);
 
     const response = await fetch("/api/casal", {

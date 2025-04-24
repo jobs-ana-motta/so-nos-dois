@@ -12,20 +12,25 @@ const casalSchema = z.object({
   emoji: z.string().min(1, "Emoji obrigatorio"),
   data: z.string().min(1, "Data de início obrigatoria"),
   cor: z.string().min(1, "Cor de fundo obrigatoria"),
-  fotoUrl: z.string().min(1, "Foto obrigatoria"),
+  fotoUrl: z.array(z.string()).min(1, "Foto obrigatoria"),
+  musicId : z.string().min(1, "Musica obrigatoria"),
 });
 
 export async function POST(request: NextRequest) {
   try {
     const formData = await request.formData();
-    const file = formData.get("file") as File | null;
-
-    if (!file) {
+    const files = formData.get("file") as File[] | null;
+    if (!files) {
       return NextResponse.json({ error: "Imagem não enviada" }, { status: 400 });
     }
 
+    const fotoUrl = []
+
+    for( let file of files) {
+      let picture = await uploadToCloudinary(file, "casais");
+      fotoUrl.push(picture)
+    }
     const fields = formDataToObject(formData);
-    const fotoUrl = await uploadToCloudinary(file, "casais");
     console.log(fields)
     const parsed = casalSchema.safeParse({ ...fields, fotoUrl });
 

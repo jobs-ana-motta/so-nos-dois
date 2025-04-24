@@ -7,22 +7,15 @@ import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Narnoor, Rouge_Script } from "next/font/google";
 import { QrSharePopover } from "@/components/qrcode";
-import {
-  Carousel,
-  CarouselContent,
-  CarouselNext,
-  CarouselPrevious,
-} from "@/components/ui/carousel";
-import ImagePreview from "@/components/imagePreview";
+import ImagePreview from "./imagePreview";
 
 interface Casal {
   cor: string;
-  data: string;
+  data: string | null;
   emoji: string;
   message: string;
   nome: string;
-  paid: boolean;
-  fotoUrl: string;
+  fotosUrl: string[] | null;
 }
 
 const narnoor = Narnoor({
@@ -37,46 +30,15 @@ const rouge = Rouge_Script({
   variable: "--font-rouge",
 });
 
-export default function PageCasal() {
-  const [casal, setCasal] = useState<Casal | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [url, setUrl] = useState("");
-  const { id } = useParams();
-
-  const router = useRouter();
-  const gradient = casal
-    ? `linear-gradient(to top, ${casal.cor}, ${lighten(casal.cor, 0.4)})`
-    : undefined;
-
-  const cor = casal ? casal.cor : "white";
-
-  useEffect(() => {
-    async function loadCasal() {
-      const response = await fetch(`/api/casal/${id}`);
-      const data = await response.json();
-      setCasal(data);
-      if (response.status == 404) {
-        router.push("/404");
-      } else {
-        setLoading(false);
-      }
-    }
-
-    if (id) {
-      loadCasal();
-    } else {
-      router.push("/404");
-    }
-  }, []);
-
-  useEffect(() => {
-    setUrl(window.location.href);
-    // console.log(window.location.href);
-  }, []);
-
-  if (loading) {
-    return <Loading />;
-  }
+export default function Preview({
+  cor,
+  data,
+  emoji,
+  fotosUrl,
+  message,
+  nome,
+}: Casal) {
+  const gradient = `linear-gradient(to top, ${cor}, ${lighten(cor, 0.4)})`;
 
   return (
     <div
@@ -88,7 +50,7 @@ export default function PageCasal() {
         style={{ border: `1px solid white` }}
       >
         <div
-          className={`bg-white/80 shadow-xl rounded-lg p-3 max-w-[450px] text-center flex justify-center flex-col items-center gap-3 relative ${`shadow-[${lighten(
+          className={`bg-white/80 shadow-xl rounded-lg p-3 w-full text-center flex justify-center flex-col items-center gap-3 relative ${`shadow-[${lighten(
             cor,
             0.1
           )}]`}`}
@@ -97,6 +59,7 @@ export default function PageCasal() {
             className="absolute inset-0 bg-[url('/sunflower.png')] bg-contain bg-no-repeat bg-bottom pointer-events-none"
             aria-hidden="true"
           />
+
           <iframe
             src="https://open.spotify.com/embed/track/3LodnEuvawlcOLBD3ssDt7?utm_source=generator"
             width="100%"
@@ -105,14 +68,17 @@ export default function PageCasal() {
             allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
             loading="lazy"
           ></iframe>
-          <div className="relative h-96 w-full mb-4 rounded-lg overflow-hidden flex justify-center">
-            <ImagePreview src={casal?.fotoUrl!} />
-          </div>
+
+          {fotosUrl && (
+            <div className="relative h-96 w-full mb-4 rounded-lg overflow-hidden flex justify-center">
+              <ImagePreview src={fotosUrl} />
+            </div>
+          )}
           <h1
             className={`text-6xl mb-2 ${rouge.className}`}
             style={{ color: cor }}
           >
-            {casal?.nome}
+            {nome}
           </h1>
           <p
             className={` mb-4 font-poppins font-bold ${narnoor.className}`}
@@ -120,19 +86,20 @@ export default function PageCasal() {
           >
             Juntos há:
           </p>
-          <Message color={cor} date={casal ? casal.data : new Date()} />
+
+          {data && <Message color={cor} date={data} />}
 
           <div
-            className={`flex flex-col gap-4 text-center font-bold ${narnoor.className} p-2 max-w-[500px]`}
+            className={`flex flex-col gap-4 text-center font-bold ${narnoor.className} p-2 w-[320px]`}
             style={{ color: cor }}
           >
-            <p>{casal ? casal.message : ""}</p>
+            <p className="break-words">{message}</p>
           </div>
           <hr className="w-40" style={{ border: `1px solid ${cor}` }} />
 
-          <h1 className="text-7xl">{casal ? casal.emoji : ""}</h1>
+          <h1 className="text-7xl">{emoji}</h1>
 
-          <QrSharePopover url={url} cor={cor} />
+          <QrSharePopover url={""} cor={cor} />
         </div>
       </div>
     </div>

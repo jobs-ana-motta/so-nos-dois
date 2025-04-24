@@ -16,7 +16,7 @@ import {
 } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 import { DialogContent, Dialog, DialogTitle } from "@/components/ui/dialog";
@@ -31,10 +31,10 @@ import { ptBR } from "date-fns/locale";
 import { format } from "date-fns";
 import { dataUrlToFile } from "@/lib/dataUrlTofile";
 import { objectToFormData } from "@/lib/objectToFormData";
-import { useRouter } from "next/navigation";
 import { validationSchema } from "./forms/validationSchema";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import Preview from "@/components/preview";
 
 const EMOJIS = [
   "❤️",
@@ -87,8 +87,7 @@ export default function Create() {
   const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
   const [fullImage, setFullImage] = useState("");
   const [loading, setLoading] = useState(false);
-
-  const router = useRouter();
+  const [previewData, setPreviewData] = useState(initialValues);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -126,7 +125,7 @@ export default function Create() {
     });
 
     const data = await response.json();
-    console.log(data)
+    console.log(data);
     setFullImage("");
     setSelectedEmoji("");
     setSelectedColor("");
@@ -145,313 +144,354 @@ export default function Create() {
   return (
     <div className="flex w-full h-screen flex-col items-center gap-5">
       <Header />
-      <main className="flex-1 flex items-center flex-col gap-4 p-2 mt-20">
-        <div className="flex flex-col items-center">
-          <h1 className="font-bold text-2xl">Crie sua página especial</h1>
-          <p className="text-gray-300 text-sm text-center">
-            Preencha os detalhes abaixo para criar uma página única e romântica
-            para vocês dois.
-          </p>
-        </div>
+      <main className="flex-1 flex flex-col xl:flex-row gap-6 p-4 mt-20 w-full max-w-7xl mx-auto">
+        <div>
+          <div className="flex flex-col items-center">
+            <h1 className="font-bold text-2xl">Crie sua página especial</h1>
+            <p className="text-gray-300 text-sm text-center">
+              Preencha os detalhes abaixo para criar uma página única e
+              romântica para vocês dois.
+            </p>
+          </div>
 
-        <Formik
-          initialValues={initialValues}
-          onSubmit={handleSubmit}
-          validationSchema={validationSchema}
-        >
-          {({
-            values,
-            errors,
-            touched,
-            handleChange,
-            handleBlur,
-            handleSubmit,
-            isSubmitting,
-            setFieldValue,
-          }) => {
-            const handleCrop = async () => {
-              const croppedImage = await getCroppedImg(
-                imageSrc!,
-                croppedAreaPixels!
-              );
-              setFullImage(croppedImage);
-              setFieldValue("file", croppedImage);
-              setModalOpen(false);
-            };
+          <Formik
+            initialValues={initialValues}
+            onSubmit={handleSubmit}
+            validationSchema={validationSchema}
+          >
+            {({
+              values,
+              errors,
+              touched,
+              handleChange,
+              handleBlur,
+              handleSubmit,
+              isSubmitting,
+              setFieldValue,
+            }) => {
+              const handleCrop = async () => {
+                const croppedImage = await getCroppedImg(
+                  imageSrc!,
+                  croppedAreaPixels!
+                );
+                setFullImage(croppedImage);
+                setFieldValue("file", [...values.file, croppedImage]);
+                setModalOpen(false);
+              };
 
-            const removeImg = () => {
-              setFieldValue("file", "");
-              setFullImage("");
-            };
-            return (
-              <Form className="w-full flex items-center flex-col p-4 bg-[#1f1f1f] rounded shadow-md gap-4 md:min-w-[768px]">
-                <div className="flex w-full justify-between gap-4">
-                  <div className="flex flex-col gap-2 w-full">
-                    <p className="text-md flex gap-2 items-center">
-                      <User className="text-[#D22630]" /> Eu
-                    </p>
-                    <InputFormik
-                      name="nome1"
-                      className="flex-1 outline-none "
-                      placeholder="Seu Nome"
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                    />
-                    {errors.nome1 && touched.nome1 ? (
-                      <div className="text-[#D22630] text-xs">{errors.nome1}</div>
-                    ) : (
-                      " "
-                    )}
+              const removeImg = () => {
+                setFieldValue("file", "");
+                setFullImage("");
+              };
+
+              useEffect(() => {
+                setPreviewData(values);
+              }, [values]);
+              return (
+                <Form className="w-full flex items-center flex-col p-4 bg-[#1f1f1f] rounded shadow-md gap-4 md:min-w-[768px]">
+                  <div className="flex w-full justify-between gap-4">
+                    <div className="flex flex-col gap-2 w-full">
+                      <p className="text-md flex gap-2 items-center">
+                        <User className="text-[#D22630]" /> Eu
+                      </p>
+                      <InputFormik
+                        name="nome1"
+                        className="flex-1 outline-none "
+                        placeholder="Seu Nome"
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                      />
+                      {errors.nome1 && touched.nome1 ? (
+                        <div className="text-[#D22630] text-xs">
+                          {errors.nome1}
+                        </div>
+                      ) : (
+                        " "
+                      )}
+                    </div>
+                    <div className="flex flex-col gap-2 w-full">
+                      <p className="text-md flex gap-2 items-center">
+                        <User className="text-[#D22630]" /> Meu Amor
+                      </p>
+                      <InputFormik
+                        name="nome2"
+                        className="flex-1 outline-none "
+                        placeholder="Nome do seu amor"
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                      />
+                      {errors.nome2 && touched.nome2 ? (
+                        <div className="text-[#D22630] text-xs">
+                          {errors.nome2}
+                        </div>
+                      ) : (
+                        <div>{""}</div>
+                      )}
+                    </div>
                   </div>
-                  <div className="flex flex-col gap-2 w-full">
+
+                  <div className="w-full flex flex-col gap-2">
                     <p className="text-md flex gap-2 items-center">
-                      <User className="text-[#D22630]" /> Meu Amor
+                      <CalendarIcon className="text-[#D22630]" /> Data do início
+                      do relacionamento
                     </p>
-                    <InputFormik
-                      name="nome2"
-                      className="flex-1 outline-none "
-                      placeholder="Nome do seu amor"
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                    />
-                    {errors.nome2 && touched.nome2 ? (
-                      <div className="text-[#D22630] text-xs">{errors.nome2}</div>
+
+                    <Field name="data">
+                      {({ form, field }: any) => {
+                        const date = field.value ? new Date(field.value) : null;
+
+                        return (
+                          <Popover>
+                            <PopoverTrigger asChild>
+                              <Button
+                                type="button"
+                                className={cn(
+                                  "w-full flex justify-start items-center text-left cursor-pointer px-4 py-2 rounded-md bg-card-foreground gap-2 border-[0.5px] border-gray-700"
+                                )}
+                              >
+                                <CalendarIcon className="h-4 w-4" />
+                                {date
+                                  ? format(date, "dd/MM/yyyy")
+                                  : "Selecione a data"}
+                              </Button>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-full p-0">
+                              <DatePicker
+                                selected={
+                                  values.data ? values.data : new Date()
+                                }
+                                onChange={(d) => {
+                                  form.setFieldValue("data", d);
+                                }}
+                                dateFormat={"dd/MM/yyyy"}
+                                showMonthDropdown
+                                showYearDropdown
+                                dropdownMode="select"
+                                locale={ptBR}
+                                className="w-full p-2 text-sm rounded-md focus:outline-none"
+                                inline
+                              />
+                            </PopoverContent>
+                          </Popover>
+                        );
+                      }}
+                    </Field>
+
+                    {errors.data && touched.data ? (
+                      <div className="text-[#D22630] text-xs">
+                        {errors.data}
+                      </div>
                     ) : (
                       <div>{""}</div>
                     )}
                   </div>
-                </div>
 
-                <div className="w-full flex flex-col gap-2">
-                  <p className="text-md flex gap-2 items-center">
-                    <CalendarIcon className="text-[#D22630]" /> Data do início
-                    do relacionamento
-                  </p>
-
-                  <Field name="data">
-                    {({ form, field }: any) => {
-                      const date = field.value ? new Date(field.value) : null;
-
-                      return (
-                        <Popover>
-                          <PopoverTrigger asChild>
-                            <Button
-                              type="button"
-                              className={cn(
-                                "w-full flex justify-start items-center text-left cursor-pointer px-4 py-2 rounded-md bg-card-foreground gap-2 border-[0.5px] border-gray-700"
-                              )}
-                            >
-                              <CalendarIcon className="h-4 w-4" />
-                              {date
-                                ? format(date, "dd/MM/yyyy")
-                                : "Selecione a data"}
-                            </Button>
-                          </PopoverTrigger>
-                          <PopoverContent className="w-full p-0">
-                            {/* <Calendar
-                              mode="single"
-                              selected={values.data ? values.data : new Date()}
-                              onSelect={(d) => form.setFieldValue("data", d)}
-                              locale={ptBR}
-                            /> */}
-                            <DatePicker
-                              selected={values.data ? values.data : new Date()}
-                              onChange={(d) => {
-                                form.setFieldValue("data", d)
-                              }}
-                              dateFormat={"dd/MM/yyyy"}
-                              showMonthDropdown
-                              showYearDropdown
-                              dropdownMode="select"
-                              locale={ptBR}
-                              className="w-full p-2 text-sm rounded-md focus:outline-none"
-                              inline 
-                            />
-                          </PopoverContent>
-                        </Popover>
-                      );
-                    }}
-                  </Field>
-
-                  {errors.data && touched.data ? (
-                    <div className="text-[#D22630] text-xs">{errors.data}</div>
-                  ) : (
-                    <div>{""}</div>
-                  )}
-                </div>
-
-                <div className="w-full flex flex-col gap-2">
-                  <p className="text-md flex gap-2 items-center">
-                    <MessageSquare className="text-[#D22630]" /> Mensagem
-                    personalizada
-                  </p>
-                  <Textarea
-                    name="message"
-                    className="outline-none bg-card-foreground border-[0.5px] border-gray-700 resize-none max-w-[750px]"
-                    placeholder="Messagem fofinha"
-                    value={values.message}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                  />
-                  {errors.message && touched.message ? (
-                    <div className="text-[#D22630] text-xs">{errors.message}</div>
-                  ) : (
-                    <div>{""}</div>
-                  )}
-                </div>
-
-                <div className="w-full flex flex-col gap-2">
-                  <p className="text-md flex gap-2 items-center">
-                    <Smile className="text-[#D22630]" /> Emoji que representa o
-                    casal
-                  </p>
-                  <div className="grid grid-cols-10 gap-2">
-                    {EMOJIS.map((emoji) => (
-                      <Button
-                        key={emoji}
-                        type="button"
-                        variant={selectEmoji === emoji ? "secondary" : "ghost"}
-                        className={cn("h-10 w-10 p-0 text-xl cursor-pointer")}
-                        onClick={() => {
-                          setSelectedEmoji(emoji);
-                          setFieldValue("emoji", emoji);
-                        }}
-                      >
-                        {emoji}
-                      </Button>
-                    ))}
-                  </div>
-
-                  {errors.emoji && touched.emoji ? (
-                    <div className="text-[#D22630] text-xs">{errors.emoji}</div>
-                  ) : (
-                    <div>{""}</div>
-                  )}
-                </div>
-
-                <div className="w-full flex flex-col gap-2">
-                  <p className="text-md flex gap-2 items-center">
-                    <Palette className="text-[#D22630]" /> Cor de fundo
-                  </p>
-
-                  <div className="grid grid-cols-10 gap-3 md:gap-6">
-                    {COLORS.map((color) => (
-                      <button
-                        key={color}
-                        type="button"
-                        className={cn(
-                          "h-6 w-6 rounded-full border-2 cursor-pointer",
-                          colorSel === color
-                            ? "border-white ring-2 ring-primary"
-                            : "border-transparent"
-                        )}
-                        style={{ backgroundColor: color }}
-                        onClick={() => {
-                          setSelectedColor(color);
-                          setFieldValue("cor", color);
-                        }}
-                        aria-label={`Cor ${color}`}
-                      />
-                    ))}
-                  </div>
-
-                  {errors.cor && touched.cor ? (
-                    <div className="text-[#D22630] text-xs">{errors.cor}</div>
-                  ) : (
-                    <div>{""}</div>
-                  )}
-                </div>
-
-                <div className="w-full flex flex-col gap-2">
-                  <p className="text-md flex gap-2 items-center">
-                    <Upload className="text-[#D22630]" /> Foto especial
-                  </p>
-
-                  <div>
-                    <input
-                      id="photo"
-                      type="file"
-                      accept="image/*"
-                      onChange={handleImageChange}
-                      className="hidden"
+                  <div className="w-full flex flex-col gap-2">
+                    <p className="text-md flex gap-2 items-center">
+                      <MessageSquare className="text-[#D22630]" /> Mensagem
+                      personalizada
+                    </p>
+                    <Textarea
+                      name="message"
+                      className="outline-none bg-card-foreground border-[0.5px] border-gray-700 resize-none max-w-[750px]"
+                      placeholder="Messagem fofinha"
+                      value={values.message}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
                     />
-                    <label htmlFor="photo" className="cursor-pointer">
-                      <div className="flex h-32 w-full items-center justify-center rounded-lg border border-dashed p-4 text-center">
-                        Clique para fazer upload
+                    {errors.message && touched.message ? (
+                      <div className="text-[#D22630] text-xs">
+                        {errors.message}
                       </div>
-                    </label>
+                    ) : (
+                      <div>{""}</div>
+                    )}
+                  </div>
 
-                    {errors.file && touched.file ? (
-                    <div className="text-[#D22630] text-xs">{errors.file}</div>
-                  ) : (
-                    <div>{""}</div>
+                  <div className="w-full flex flex-col gap-2">
+                    <p className="text-md flex gap-2 items-center">
+                      <Smile className="text-[#D22630]" /> Emoji que representa
+                      o casal
+                    </p>
+                    <div className="grid grid-cols-10 gap-2">
+                      {EMOJIS.map((emoji) => (
+                        <Button
+                          key={emoji}
+                          type="button"
+                          variant={
+                            selectEmoji === emoji ? "secondary" : "ghost"
+                          }
+                          className={cn("h-10 w-10 p-0 text-xl cursor-pointer")}
+                          onClick={() => {
+                            setSelectedEmoji(emoji);
+                            setFieldValue("emoji", emoji);
+                          }}
+                        >
+                          {emoji}
+                        </Button>
+                      ))}
+                    </div>
+
+                    {errors.emoji && touched.emoji ? (
+                      <div className="text-[#D22630] text-xs">
+                        {errors.emoji}
+                      </div>
+                    ) : (
+                      <div>{""}</div>
+                    )}
+                  </div>
+
+                  <div className="w-full flex flex-col gap-2">
+                    <p className="text-md flex gap-2 items-center">
+                      <Palette className="text-[#D22630]" /> Cor de fundo
+                    </p>
+
+                    <div className="grid grid-cols-10 gap-3 md:gap-6">
+                      {COLORS.map((color) => (
+                        <button
+                          key={color}
+                          type="button"
+                          className={cn(
+                            "h-6 w-6 rounded-full border-2 cursor-pointer",
+                            colorSel === color
+                              ? "border-white ring-2 ring-primary"
+                              : "border-transparent"
+                          )}
+                          style={{ backgroundColor: color }}
+                          onClick={() => {
+                            setSelectedColor(color);
+                            setFieldValue("cor", color);
+                          }}
+                          aria-label={`Cor ${color}`}
+                        />
+                      ))}
+                    </div>
+
+                    {errors.cor && touched.cor ? (
+                      <div className="text-[#D22630] text-xs">{errors.cor}</div>
+                    ) : (
+                      <div>{""}</div>
+                    )}
+                  </div>
+
+                  <div className="w-full flex flex-col gap-2">
+                    <p className="text-md flex gap-2 items-center">
+                      <Upload className="text-[#D22630]" /> Foto especial
+                    </p>
+
+                    <div>
+                      <input
+                        id="photo"
+                        type="file"
+                        accept="image/*"
+                        onChange={handleImageChange}
+                        className="hidden"
+                        disabled={values.file.length === 5}
+                      />
+                      <label htmlFor="photo" className={`${values.file.length === 5 ? "cursor-not-allowed" : "cursor-pointer"}`} >
+                        <div className="flex h-32 w-full items-center justify-center rounded-lg border border-dashed p-4 text-center">
+                          Clique para fazer upload
+                        </div>
+                      </label>
+
+                      {errors.file && touched.file ? (
+                        <div className="text-[#D22630] text-xs">
+                          {errors.file}
+                        </div>
+                      ) : (
+                        <div>{""}</div>
+                      )}
+
+                      <Dialog open={modalOpen} onOpenChange={setModalOpen}>
+                        <DialogTitle className="hidden">
+                          Recorte sua foto
+                        </DialogTitle>
+                        <DialogContent className="w-[90vw] max-w-xl h-[70vh]">
+                          {imageSrc && (
+                            <div className="relative w-full h-full">
+                              <Cropper
+                                image={imageSrc}
+                                crop={crop}
+                                zoom={zoom}
+                                aspect={12 / 16}
+                                onCropChange={setCrop}
+                                onCropComplete={onCropComplete}
+                                onZoomChange={setZomm}
+                              />
+                              <Button
+                                className="absolute left-1/2 -translate-x-1/2 -bottom-6 bg-[#D22630] cursor-pointer"
+                                onClick={handleCrop}
+                              >
+                                Recortar imagem
+                              </Button>
+                            </div>
+                          )}
+                        </DialogContent>
+                      </Dialog>
+                    </div>
+                  </div>
+
+                  {fullImage && (
+                    <div className="my-4 flex gap-2 flex-wrap">
+                      {values.file.map((img, index) => (
+                        <div key={index} className="relative">
+                          <Image
+                            src={img}
+                            alt={`Foto ${index}`}
+                            width={100}
+                            height={160}
+                            className="rounded-md object-cover border border-gray-600"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const updated = values.file.filter(
+                                (_, i) => i !== index
+                              );
+                              setFieldValue("file", updated);
+                            }}
+                            className="absolute top-1 right-1 bg-[#D22630] text-white text-xs px-2 py-1 rounded cursor-pointer"
+                          >
+                            ✕
+                          </button>
+                        </div>
+                      ))}
+                    </div>
                   )}
 
-                    <Dialog open={modalOpen} onOpenChange={setModalOpen}>
-                      <DialogTitle className="hidden">
-                        Recorte sua foto
-                      </DialogTitle>
-                      <DialogContent className="w-[90vw] max-w-xl h-[70vh]">
-                        {imageSrc && (
-                          <div className="relative w-full h-full">
-                            <Cropper
-                              image={imageSrc}
-                              crop={crop}
-                              zoom={zoom}
-                              aspect={12 / 16}
-                              onCropChange={setCrop}
-                              onCropComplete={onCropComplete}
-                              onZoomChange={setZomm}
-                            />
-                            <Button
-                              className="absolute left-1/2 -translate-x-1/2 -bottom-6 bg-[#D22630] cursor-pointer"
-                              onClick={handleCrop}
-                            >
-                              Recortar imagem
-                            </Button>
-                          </div>
-                        )}
-                      </DialogContent>
-                    </Dialog>
-                  </div>
-                </div>
+                  <Button
+                    onClick={() => handleSubmit()}
+                    className="bg-[#D22630] w-full cursor-pointer"
+                    disabled={isSubmitting}
+                    type="submit"
+                  >
+                    {loading ? (
+                      <div className="flex items-center justify-center gap-2">
+                        <p className="font-semibold text-gray-400 opacity-90">
+                          Carregando...
+                        </p>
+                        <Loader className="h-5 w-5 animate-spin" />
+                      </div>
+                    ) : (
+                      "Criar sua página"
+                    )}
+                  </Button>
+                </Form>
+              );
+            }}
+          </Formik>
+        </div>
 
-                {fullImage && (
-                  <div className="my-4 flex justify-center flex-col gap-4">
-                    <Image
-                      src={fullImage}
-                      alt="Preview recortado"
-                      width={200}
-                      height={355}
-                      className="rounded-lg object-cover border border-gray-600"
-                    />
-
-                    <Button
-                      onClick={removeImg}
-                      className="bg-[#D22630] w-full cursor-pointer"
-                    >
-                      Remover foto
-                    </Button>
-                  </div>
-                )}
-
-                <Button
-                  onClick={() => handleSubmit()}
-                  className="bg-[#D22630] w-full cursor-pointer"
-                  disabled={isSubmitting}
-                  type="submit"
-                >
-                  {loading ? (
-                    <div className="flex items-center justify-center gap-2">
-                      <p className="font-semibold text-gray-400 opacity-90">Carregando...</p>
-                      <Loader className="h-5 w-5 animate-spin"/>
-                    </div>
-                  ) :  "Criar sua página"}
-                </Button>
-              </Form>
-            );
-          }}
-        </Formik>
+        <div className="flex justify-center items-center">
+          <Preview
+            cor={previewData.cor}
+            data={previewData?.data?.toISOString() || null}
+            emoji={previewData.emoji}
+            message={previewData.message}
+            nome={`${previewData.nome1} e ${previewData.nome2}`}
+            fotosUrl={previewData.file}
+          />
+        </div>
       </main>
       <Footer />
     </div>

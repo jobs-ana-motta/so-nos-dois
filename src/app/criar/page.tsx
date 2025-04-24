@@ -119,8 +119,10 @@ export default function Create() {
     const file = dataUrlToFile(values.file);
     const formateddValues = { ...values, file };
     formateddValues.nome = `${values.nome1} e ${values.nome2}`;
+    formateddValues.idMusic = values.music.id
     delete formateddValues.nome1;
     delete formateddValues.nome2;
+    delete formateddValues.music
     const sendValues = objectToFormData(formateddValues);
 
     const response = await fetch("/api/casal", {
@@ -182,11 +184,6 @@ export default function Create() {
                 setFullImage(croppedImage);
                 setFieldValue("file", [...values.file, croppedImage]);
                 setModalOpen(false);
-              };
-
-              const removeImg = () => {
-                setFieldValue("file", "");
-                setFullImage("");
               };
 
               useEffect(() => {

@@ -8,9 +8,10 @@ import { X } from "lucide-react";
 interface SearchSpotifyProps {
     value: any | null;
     onChange: (track: any | null) => void;
+    onBlur?: () => void;
 }
 
-export default function SearchSpotfy({ value, onChange }: SearchSpotifyProps) {
+export default function SearchSpotfy({ value, onChange, onBlur }: SearchSpotifyProps) {
   const [query, setQuery] = useState("");
   const debouncedQuery = useDebounce(query, 500);
   const [results, setResults] = useState<any[]>([]);
@@ -30,14 +31,15 @@ export default function SearchSpotfy({ value, onChange }: SearchSpotifyProps) {
 
   if (value) {
     return (
-      <div className="w-full h-16 max-w-lg flex justify-start gap-3 rounded-lg border shadow-md bg-accent-foreground text-white border-accent-foreground">
+      <div className="w-full h-16 flex justify-start gap-3 rounded-lg 
+       bg-card-foreground text-white border-[0.5px] border-gray-700 items-center">
         <img
           src={value.album.images?.[2]?.url}
           className="h-full rounded"
         />
         <div>
-          <div>
-            <p className="font-bold text-start">{value.name}</p>
+          <div className="flex flex-col">
+            <p className="font-bold text-start line-clamp-1">{value.name}</p>
             <p className="text-sm text-muted-foreground text-start line-clamp-1">
               {value.artists.map((a: any) => a.name).join(", ")}
             </p>
@@ -58,12 +60,12 @@ export default function SearchSpotfy({ value, onChange }: SearchSpotifyProps) {
   }
 
   return (
-    <Command className="w-full flex justify-center  h-16 max-w-lg rounded-lg border shadow-md bg-transparent text-white border-accent-foreground relative overflow-visible">
+    <Command className="w-full flex justify-center h-16 rounded-lg bg-card-foreground border-[0.5px] border-gray-700 text-white  relative overflow-visible">
       <CommandInput
         placeholder="Buscar música no Spotify..."
         value={query}
         onValueChange={setQuery}
-        className="py-0 "
+        className="py-0 text-base"
       />
       <CommandList className="absolute h-auto top-12 z-50 bg-card-foreground w-full">
         {results.map((track) => (
@@ -73,6 +75,7 @@ export default function SearchSpotfy({ value, onChange }: SearchSpotifyProps) {
             onSelect={() => {
               onChange(track);
             }}
+            onBlur={onBlur}
           >
             <div className="flex items-center gap-2">
               <img

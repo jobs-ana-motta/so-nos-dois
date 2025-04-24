@@ -17,5 +17,6 @@ export const validationSchema = Yup.object().shape({
   cor: Yup.string().required("Cor obrigatória"),
   file: Yup.array()
     .of(Yup.string().required("Imagem obrigatória"))
-    .min(1, "Envie pelo menos 1 imagem")
+    .min(1, "Envie pelo menos 1 imagem"),
+  music: Yup.object().required("Música obrigatória")
 });

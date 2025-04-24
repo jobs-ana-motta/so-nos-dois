@@ -16,6 +16,7 @@ interface Casal {
   message: string;
   nome: string;
   fotosUrl: string[] | null;
+  trackId: string | null;
 }
 
 const narnoor = Narnoor({
@@ -37,6 +38,7 @@ export default function Preview({
   fotosUrl,
   message,
   nome,
+  trackId,
 }: Casal) {
   const gradient = `linear-gradient(to top, ${cor}, ${lighten(cor, 0.4)})`;
 
@@ -60,14 +62,16 @@ export default function Preview({
             aria-hidden="true"
           />
 
-          <iframe
-            src="https://open.spotify.com/embed/track/3LodnEuvawlcOLBD3ssDt7?utm_source=generator"
-            width="100%"
-            height="100"
-            frameBorder="0"
-            allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-            loading="lazy"
-          ></iframe>
+          {trackId && (
+            <iframe
+              src={`https://open.spotify.com/embed/track/${trackId}?utm_source=generator`}
+              width="100%"
+              height="100"
+              frameBorder="0"
+              allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+              loading="lazy"
+            ></iframe>
+          )}
 
           {fotosUrl && (
             <div className="relative h-96 w-full mb-4 rounded-lg overflow-hidden flex justify-center">

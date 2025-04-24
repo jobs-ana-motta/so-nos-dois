@@ -13,6 +13,7 @@ import {
   Palette,
   Upload,
   Loader,
+  Music,
 } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
@@ -35,6 +36,8 @@ import { validationSchema } from "./forms/validationSchema";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import Preview from "@/components/preview";
+import SearchSpotfy from "@/components/searchSpotfy";
+import { Track } from "@/lib/types/track";
 
 const EMOJIS = [
   "❤️",
@@ -82,6 +85,7 @@ export default function Create() {
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZomm] = useState(1);
   const [colorSel, setSelectedColor] = useState("");
+  const [music, setMusica] = useState<Track>();
   const [modalOpen, setModalOpen] = useState(false);
   const [imageSrc, setImageSrc] = useState<string | null>(null);
   const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
@@ -168,6 +172,7 @@ export default function Create() {
               handleSubmit,
               isSubmitting,
               setFieldValue,
+              setFieldTouched
             }) => {
               const handleCrop = async () => {
                 const croppedImage = await getCroppedImg(
@@ -288,12 +293,36 @@ export default function Create() {
 
                   <div className="w-full flex flex-col gap-2">
                     <p className="text-md flex gap-2 items-center">
+                      <Music className="text-[#D22630]" /> Escolha a música de
+                      vocês
+                    </p>
+
+                    <SearchSpotfy
+                      value={values.music}
+                      onChange={(track) => {
+                        setFieldValue("music", track);
+                        setMusica(track);
+                      }}
+                      onBlur={() => setFieldTouched("music", true)}
+                    />
+
+                    {errors.music && touched.music ? (
+                      <div className="text-[#D22630] text-xs">
+                        {errors.music}
+                      </div>
+                    ) : (
+                      " "
+                    )}
+                  </div>
+
+                  <div className="w-full flex flex-col gap-2">
+                    <p className="text-md flex gap-2 items-center">
                       <MessageSquare className="text-[#D22630]" /> Mensagem
                       personalizada
                     </p>
                     <Textarea
                       name="message"
-                      className="outline-none bg-card-foreground border-[0.5px] border-gray-700 resize-none max-w-[750px]"
+                      className="outline-none bg-card-foreground border-[0.5px] border-gray-700 resize-none"
                       placeholder="Messagem fofinha"
                       value={values.message}
                       onChange={handleChange}
@@ -388,7 +417,14 @@ export default function Create() {
                         className="hidden"
                         disabled={values.file.length === 5}
                       />
-                      <label htmlFor="photo" className={`${values.file.length === 5 ? "cursor-not-allowed" : "cursor-pointer"}`} >
+                      <label
+                        htmlFor="photo"
+                        className={`${
+                          values.file.length === 5
+                            ? "cursor-not-allowed"
+                            : "cursor-pointer"
+                        }`}
+                      >
                         <div className="flex h-32 w-full items-center justify-center rounded-lg border border-dashed p-4 text-center">
                           Clique para fazer upload
                         </div>
@@ -490,6 +526,7 @@ export default function Create() {
             message={previewData.message}
             nome={`${previewData.nome1} e ${previewData.nome2}`}
             fotosUrl={previewData.file}
+            trackId={music?.id || null}
           />
         </div>
       </main>

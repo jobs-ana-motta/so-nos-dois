@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { intervalToDuration } from "date-fns";
 import { Narnoor } from "next/font/google";
-import { lighten } from "@/lib/rgbColor";
 
 const narnoor = Narnoor({
   weight: "400",

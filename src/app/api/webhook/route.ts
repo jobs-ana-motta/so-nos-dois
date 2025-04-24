@@ -34,7 +34,6 @@ export async function POST(req: NextRequest) {
       if (casalId) {
         try {
           await updateDoc(doc(db, "casais", casalId), { paid: true });
-          console.log("✅ Pagamento confirmado para o casal:", casalId);
         } catch (err) {
           console.error("Erro ao atualizar o casal no Firestore:", err);
         }

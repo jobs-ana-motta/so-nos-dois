@@ -12,8 +12,6 @@ export async function getAccessToken() {
         return access_token;
     }
     let basic =  `Basic ${Buffer.from(`${client_id}:${client_secret}`).toString('base64')}`;
-    console.log(client_id, client_secret)
-    console.log(basic)
     try {
         const res = await fetch('https://accounts.spotify.com/api/token', {
             method: 'POST',

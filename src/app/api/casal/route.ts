@@ -13,17 +13,16 @@ const casalSchema = z.object({
   data: z.string().min(1, "Data de início obrigatoria"),
   cor: z.string().min(1, "Cor de fundo obrigatoria"),
   fotoUrl: z.array(z.string()).min(1, "Foto obrigatoria"),
-  musicId : z.string().min(1, "Musica obrigatoria"),
+  idMusic : z.string().min(1, "Musica obrigatoria"),
 });
 
 export async function POST(request: NextRequest) {
   try {
     const formData = await request.formData();
-    const files = formData.get("file") as File[] | null;
+    const files = formData.getAll("file") as File[] | null;
     if (!files) {
       return NextResponse.json({ error: "Imagem não enviada" }, { status: 400 });
     }
-
     const fotoUrl = []
 
     for( let file of files) {
@@ -31,7 +30,6 @@ export async function POST(request: NextRequest) {
       fotoUrl.push(picture)
     }
     const fields = formDataToObject(formData);
-    console.log(fields)
     const parsed = casalSchema.safeParse({ ...fields, fotoUrl });
 
     if (!parsed.success) {

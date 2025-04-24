@@ -119,11 +119,11 @@ export default function Create() {
     const file = values.file.map(dataUrlToFile);
     const formateddValues = { ...values, file };
     formateddValues.nome = `${values.nome1} e ${values.nome2}`;
+    formateddValues.data =  new Date(values.data)
     formateddValues.idMusic = values.music.id
     delete formateddValues.nome1;
     delete formateddValues.nome2;
     delete formateddValues.music;
-    console.log(formateddValues)
     const sendValues = objectToFormData(formateddValues);
 
     const response = await fetch("/api/casal", {

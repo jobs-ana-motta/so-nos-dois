@@ -2,16 +2,11 @@
 import Loading from "@/components/loading";
 import { Message } from "@/components/timeTogether";
 import { lighten } from "@/lib/rgbColor";
-import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Narnoor, Rouge_Script } from "next/font/google";
 import { QrSharePopover } from "@/components/qrcode";
 import {
-  Carousel,
-  CarouselContent,
-  CarouselNext,
-  CarouselPrevious,
 } from "@/components/ui/carousel";
 import ImagePreview from "@/components/imagePreview";
 
@@ -23,6 +18,7 @@ interface Casal {
   nome: string;
   paid: boolean;
   fotoUrl: string;
+  idMusic : string;
 }
 
 const narnoor = Narnoor({
@@ -71,7 +67,6 @@ export default function PageCasal() {
 
   useEffect(() => {
     setUrl(window.location.href);
-    // console.log(window.location.href);
   }, []);
 
   if (loading) {
@@ -98,7 +93,7 @@ export default function PageCasal() {
             aria-hidden="true"
           />
           <iframe
-            src="https://open.spotify.com/embed/track/3LodnEuvawlcOLBD3ssDt7?utm_source=generator"
+            src={`https://open.spotify.com/embed/track/${casal?.idMusic}?utm_source=generator&theme=1`}
             width="100%"
             height="100"
             frameBorder="0"

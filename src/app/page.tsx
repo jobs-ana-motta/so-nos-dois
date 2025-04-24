@@ -22,6 +22,7 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import SearchSpotfy from "@/components/searchSpotfy";
 
 export default function Home() {
   function PricingItem({ text }: { text: string }) {
@@ -81,7 +82,6 @@ export default function Home() {
                 criptografadas e design exclusivo. Transforme seu relacionamento
                 em uma experiência digital inesquecível.
               </p>
-
               <div className="flex gap-4 flex-wrap ">
                 <div className="flex items-center gap-2 rounded-lg border border-border/10 bg-[#141414] px-3 py-2 backdrop-blur-sm w-full md:w-auto">
                   <Clock className="h-4 w-4 text-[#D22630]" />

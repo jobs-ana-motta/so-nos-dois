@@ -14,6 +14,7 @@ import {
   Upload,
   Loader,
   Music,
+  CircleDollarSign,
 } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
@@ -38,6 +39,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import Preview from "@/components/preview";
 import SearchSpotfy from "@/components/searchSpotfy";
 import { Track } from "@/lib/types/track";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 
 const EMOJIS = [
   "❤️",
@@ -91,7 +93,7 @@ export default function Create() {
   const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
   const [fullImage, setFullImage] = useState("");
   const [loading, setLoading] = useState(false);
-  const [previewData, setPreviewData] = useState(initialValues);
+  const [previewData, setPreviewData] = useState<initialValues>(initialValues);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -119,11 +121,12 @@ export default function Create() {
     const file = values.file.map(dataUrlToFile);
     const formateddValues = { ...values, file };
     formateddValues.nome = `${values.nome1} e ${values.nome2}`;
-    formateddValues.data =  new Date(values.data)
-    formateddValues.idMusic = values.music.id
+    formateddValues.data = new Date(values.data);
+    formateddValues.idMusic = values.music.id;
     delete formateddValues.nome1;
     delete formateddValues.nome2;
     delete formateddValues.music;
+
     const sendValues = objectToFormData(formateddValues);
 
     const response = await fetch("/api/casal", {
@@ -132,7 +135,6 @@ export default function Create() {
     });
 
     const data = await response.json();
-    console.log(data);
     setFullImage("");
     setSelectedEmoji("");
     setSelectedColor("");
@@ -175,7 +177,7 @@ export default function Create() {
               handleSubmit,
               isSubmitting,
               setFieldValue,
-              setFieldTouched
+              setFieldTouched,
             }) => {
               const handleCrop = async () => {
                 const croppedImage = await getCroppedImg(
@@ -484,7 +486,7 @@ export default function Create() {
                               );
                               setFieldValue("file", updated);
                             }}
-                            className="absolute top-1 right-1 bg-[#D22630] text-white text-xs px-2 py-1 rounded cursor-pointer"
+                            className="absolute top-1 right-1 bg-[#D22630] text-white text-xs px-2 py-1 rounded cursor-pointer "
                           >
                             ✕
                           </button>
@@ -492,6 +494,28 @@ export default function Create() {
                       ))}
                     </div>
                   )}
+                  <p className="text-md flex gap-2 items-center w-full">
+                    <CircleDollarSign className="text-[#D22630]" /> Forma de
+                    pagamento :
+                  </p>
+                  <div className="w-full">
+                    <ToggleGroup
+                      type="single"
+                      defaultValue="1"
+                      className="w-full border border-gray-600 bg-card-foreground divide-x divide-gray-600"
+                      onValueChange={(value) => setFieldValue("type", value)}
+                    >
+                      <ToggleGroupItem value="pix" className="cursor-pointer">
+                        Pix
+                      </ToggleGroupItem>
+                      <ToggleGroupItem value="card" className="cursor-pointer">
+                        Cartão
+                      </ToggleGroupItem>
+                    </ToggleGroup>
+                    <div className="text-[#D22630] text-xs w-full">
+                      {errors.type}
+                    </div>
+                  </div>
 
                   <Button
                     onClick={() => handleSubmit()}

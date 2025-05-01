@@ -55,7 +55,7 @@ export default function Home() {
   }
   return (
     <div className="flex w-full flex-col bg-[#0B0B0B]">
-      <Header />
+      <Header/>
       <main className="flex justify-center ">
         <div className="relative w-full  flex flex-col justify-center items-center overflow-hidden mt-20">
 

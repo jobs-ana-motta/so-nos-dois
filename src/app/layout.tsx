@@ -17,26 +17,35 @@ export const metadata: Metadata = {
   description: "Românticos",
 };
 
+const isProd = (process.env.ENVIROMENT = "production");
+
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-       <head>
-        {/* Google tag (gtag.js) */}
-        <script async src="https://www.googletagmanager.com/gtag/js?id=G-T5NZ004XPC"></script>
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
+    <html lang="pt-br">
+      <head>
+        {isProd && (
+          <>
+            {/* Google tag (gtag.js) */}
+            <script
+              async
+              src="https://www.googletagmanager.com/gtag/js?id=G-T5NZ004XPC"
+            ></script>
+            <script
+              dangerouslySetInnerHTML={{
+                __html: `
               window.dataLayer = window.dataLayer || [];
               function gtag(){dataLayer.push(arguments);}
               gtag('js', new Date());
               gtag('config', 'G-T5NZ004XPC');
             `,
-          }}
-        />
+              }}
+            />
+          </>
+        )}
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}

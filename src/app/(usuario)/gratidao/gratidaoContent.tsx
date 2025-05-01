@@ -47,7 +47,6 @@ export default function GratidaoContent() {
 
   return (
     <div className="flex w-full h-screen flex-col">
-      <Header />
       <main className="flex flex-1 items-center justify-center p-2">
         <div className="flex items-center flex-col p-4 bg-[#1f1f1f] rounded shadow-md gap-4 md:min-w-[768px]">
           <div className="rounded-full bg-[#D22630]/10 p-3">

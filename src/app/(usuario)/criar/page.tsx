@@ -15,6 +15,7 @@ import {
   Loader,
   Music,
   CircleDollarSign,
+  CreditCard,
 } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
@@ -40,6 +41,7 @@ import Preview from "@/components/preview";
 import SearchSpotfy from "@/components/searchSpotfy";
 import { Track } from "@/lib/types/track";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import PixIcon from "@/components/icons/pix";
 
 const EMOJIS = [
   "❤️",
@@ -152,7 +154,6 @@ export default function Create() {
 
   return (
     <div className="flex w-full h-screen flex-col items-center gap-5">
-      <Header />
       <main className="flex-1 flex flex-col xl:flex-row gap-6 p-4 mt-20 w-full max-w-7xl mx-auto">
         <div>
           <div className="flex flex-col items-center">
@@ -506,10 +507,10 @@ export default function Create() {
                       onValueChange={(value) => setFieldValue("type", value)}
                     >
                       <ToggleGroupItem value="pix" className="cursor-pointer">
-                        Pix
+                        <PixIcon/> Pix
                       </ToggleGroupItem>
                       <ToggleGroupItem value="card" className="cursor-pointer">
-                        Cartão
+                        <CreditCard /> Cartão
                       </ToggleGroupItem>
                     </ToggleGroup>
                     <div className="text-[#D22630] text-xs w-full">

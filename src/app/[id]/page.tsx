@@ -50,6 +50,7 @@ export default function PageCasal() {
     async function loadCasal() {
       const response = await fetch(`/api/casal/${id}`);
       const data = await response.json();
+
       setCasal(data);
       if (response.status == 404) {
         router.push("/404");

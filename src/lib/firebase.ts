@@ -23,7 +23,7 @@ const app = initializeApp(fireBaseConfig);
 const auth = getAuth(app);
 signInWithEmailAndPassword(auth, "jobsanamotta@gmail.com", "pauloHenrique*31")
   .then((userCredential) => {
-    console.log("Usuário autenticado:", userCredential.user);
+    // console.log("Usuário autenticado:", userCredential.user);
   })
   .catch((error) => {
     console.error("Erro de login:", error.code, error.message);

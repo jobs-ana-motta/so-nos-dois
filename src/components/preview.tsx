@@ -31,16 +31,18 @@ const rouge = Rouge_Script({
   variable: "--font-rouge",
 });
 
-export default function Preview({
-  cor,
-  data,
-  emoji,
-  fotosUrl,
-  message,
-  nome,
-  trackId,
-}: Casal) {
-  const gradient = `linear-gradient(to top, ${cor}, ${lighten(cor, 0.4)})`;
+export default function Preview( obj : Casal | undefined ) {
+
+  if(!obj) {
+    return (
+      <div>
+        Ocorreu um erro ao exibir a sua foto, por favor entre em contato com o suporte :(
+      </div>
+    )
+  }
+
+
+  const gradient = `linear-gradient(to top, ${obj.cor}, ${lighten(obj.cor, 0.4)})`;
 
   return (
     <div
@@ -53,7 +55,7 @@ export default function Preview({
       >
         <div
           className={`bg-white/80 shadow-xl rounded-lg p-3 w-full text-center flex justify-center flex-col items-center gap-3 relative ${`shadow-[${lighten(
-            cor,
+            obj.cor,
             0.1
           )}]`}`}
         >
@@ -62,9 +64,9 @@ export default function Preview({
             aria-hidden="true"
           />
 
-          {trackId && (
+          {obj.trackId && (
             <iframe
-              src={`https://open.spotify.com/embed/track/${trackId}?utm_source=generator`}
+              src={`https://open.spotify.com/embed/track/${obj.trackId}?utm_source=generator`}
               width="100%"
               height="100"
               frameBorder="0"
@@ -73,37 +75,37 @@ export default function Preview({
             ></iframe>
           )}
 
-          {fotosUrl && (
+          {obj.fotosUrl && (
             <div className="relative h-96 w-full mb-4 rounded-lg overflow-hidden flex justify-center">
-              <ImagePreview src={fotosUrl} />
+              <ImagePreview src={obj.fotosUrl} />
             </div>
           )}
           <h1
             className={`text-6xl mb-2 ${rouge.className}`}
-            style={{ color: cor }}
+            style={{ color: obj.cor }}
           >
-            {nome}
+            {obj.nome}
           </h1>
           <p
             className={` mb-4 font-poppins font-bold ${narnoor.className}`}
-            style={{ color: cor }}
+            style={{ color: obj.cor }}
           >
             Juntos há:
           </p>
 
-          {data && <Message color={cor} date={data} />}
+          {obj.data && <Message color={obj.cor} date={obj.data} />}
 
           <div
             className={`flex flex-col gap-4 text-center font-bold ${narnoor.className} p-2 w-[320px]`}
-            style={{ color: cor }}
+            style={{ color: obj.cor }}
           >
-            <p className="break-words">{message}</p>
+            <p className="break-words">{obj.message}</p>
           </div>
-          <hr className="w-40" style={{ border: `1px solid ${cor}` }} />
+          <hr className="w-40" style={{ border: `1px solid ${obj.cor}` }} />
 
-          <h1 className="text-7xl">{emoji}</h1>
+          <h1 className="text-7xl">{obj.emoji}</h1>
 
-          <QrSharePopover url={""} cor={cor} />
+          <QrSharePopover url={""} cor={obj.cor} />
         </div>
       </div>
     </div>

@@ -14,6 +14,6 @@ export function dataUrlToFile(dataUrl: string) {
     const filename = generateRandomFilename(ext);
     return new File([u8arr], filename, { type: mime });
   } catch (error) {
-    console.log(error)
+    console.log(error, 'error ? ')
   }
 }

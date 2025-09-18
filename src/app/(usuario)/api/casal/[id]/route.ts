@@ -26,7 +26,9 @@ export async function GET(
         let data = snapshot.data()
         let info = { fotoUrl: data.fotoUrl, cor: data.cor, emoji: data.emoji, data: data.data, nome: data.nome, message: data.message, paid: data.paid, idMusic : data.idMusic };
         return NextResponse.json(info, { status: 200 });
-    } catch (error) {
+        
+    } catch (error: any) {
+        console.log(error.toString(), 'erro ao buscar casal')
         return NextResponse.json({ error: "Erro ao buscar casal" }, { status: 500 });
     }
 }

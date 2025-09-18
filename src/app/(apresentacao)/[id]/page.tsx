@@ -38,18 +38,22 @@ export default function PageCasal() {
   const [loading, setLoading] = useState(true);
   const [url, setUrl] = useState("");
   const { id } = useParams();
-
   const router = useRouter();
-  const gradient = casal
-    ? `linear-gradient(to top, ${casal.cor}, ${lighten(casal.cor, 0.4)})`
-    : undefined;
+  
 
   const cor = casal ? casal.cor : "white";
 
   useEffect(() => {
     async function loadCasal() {
       const response = await fetch(`/api/casal/${id}`);
+
+      if(!response.ok) { 
+        router.push("/404");
+        return;
+      }
+
       const data = await response.json();
+
       setCasal(data);
       if (response.status == 404) {
         router.push("/404");
@@ -69,9 +73,15 @@ export default function PageCasal() {
     setUrl(window.location.href);
   }, []);
 
-  if (loading) {
+  if (loading || !casal) {
     return <Loading />;
   }
+
+  const gradient = casal.cor
+    ? `linear-gradient(to top, ${casal.cor}, ${lighten(casal.cor, 0.4)})`
+    : undefined;
+
+  console.log(casal)
 
   return (
     <div

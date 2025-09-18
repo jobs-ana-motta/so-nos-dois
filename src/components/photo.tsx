@@ -10,7 +10,7 @@ interface PhotoInterface {
 export default function Photo({ src, index : i, curva } : PhotoInterface) {
     return (
         <motion.div
-            className="foto w-[300px] h-[300px] object-cover shadow-md flex justify-center items-center overflow-hidden relative"
+            className="foto w-[300px] h-[300px] object-cover shadow-md flex justify-center items-center overflow-hidden relative hover:scale-95 "
             style={{ transformOrigin: "top center" }}
               initial={{
                 rotate: i % 2 === 0 ? -3 : 3,
@@ -26,7 +26,7 @@ export default function Photo({ src, index : i, curva } : PhotoInterface) {
               transition={{
                 duration: 3 + Math.random() * 2,
                 repeat: Infinity,
-                easing: "ease-in-out",
+                ease : "linear"
             }}
         >
             <Image src={src} fill alt="image" className="bg-white  object-cover p-6"/>

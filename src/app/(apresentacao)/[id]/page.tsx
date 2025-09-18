@@ -81,8 +81,6 @@ export default function PageCasal() {
     ? `linear-gradient(to top, ${casal.cor}, ${lighten(casal.cor, 0.4)})`
     : undefined;
 
-  console.log(casal)
-
   return (
     <div
       className={`min-h-screen p-2 flex justify-center items-center`}

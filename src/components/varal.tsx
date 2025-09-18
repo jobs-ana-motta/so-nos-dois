@@ -1,7 +1,6 @@
 "use client";
 
-import { motion } from "motion/react";
-import { useRef, useLayoutEffect, useState, useEffect } from "react";
+import { useRef, useState, useEffect } from "react";
 import Photo from "./photo";
 
 const fotos = [
@@ -75,7 +74,7 @@ export default function VaralComLinha() {
     <div className="w-full relative" ref={containerRef}>
       <div
         ref={contentRef}
-        className="flex gap-16 px-6 py-10 w-fit min-w-full relative z-10"
+        className="flex gap-16 px-6 py-10 w-fit min-w-full relative z-10 justify-center"
       >
         <svg
           className="absolute top-0 left-0 w-full h-full pointer-events-none z-0"
